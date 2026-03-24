@@ -500,6 +500,27 @@ body {
 }
 .fs-bar.full { background: var(--success); }
 .fs-bar.partial { background: linear-gradient(90deg, var(--brand), var(--purple)); }
+
+/* ===== FILTER TABS ===== */
+.filter-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.ftab {
+  padding: 7px 18px; border-radius: 20px;
+  font-family: var(--font); font-size: 0.8rem; font-weight: 600;
+  background: var(--bg-elevated); color: var(--text2);
+  border: 1px solid var(--border); cursor: pointer;
+  transition: all 140ms var(--ease);
+}
+.ftab:hover { border-color: var(--border-strong); color: var(--text); }
+.ftab.active { background: var(--brand-light); color: var(--brand); border-color: rgba(0,217,255,0.3); }
+
+/* ===== ORDER ROW ===== */
+.ord-row {
+  display: grid; padding: 14px 20px; align-items: center;
+  border-bottom: 1px solid var(--border);
+  transition: background 140ms var(--ease);
+}
+.ord-row:last-child { border-bottom: none; }
+.ord-row:hover { background: rgba(255,255,255,0.02); }
 </style>
 </head>
 <body>
@@ -546,11 +567,9 @@ body {
   <aside class="sidebar">
     <div class="side-group">購物車管理</div>
     <div class="side-item active" data-p="cart"><svg><use href="#ic-box"/></svg><span>獎品暫存區</span><span class="side-badge">20</span></div>
-    <div class="side-item" data-p="detail"><svg><use href="#ic-list"/></svg><span>購物明細</span></div>
     <div class="side-item" data-p="ship"><svg><use href="#ic-truck"/></svg><span>申請出貨</span></div>
-    <div class="side-group">出貨紀錄</div>
-    <div class="side-item" data-p="pending"><svg><use href="#ic-clock"/></svg><span>待出貨</span><span class="side-badge">2</span></div>
-    <div class="side-item" data-p="shipped"><svg><use href="#ic-check-c"/></svg><span>已出貨</span></div>
+    <div class="side-group">紀錄</div>
+    <div class="side-item" data-p="orders"><svg><use href="#ic-list"/></svg><span>出貨紀錄</span><span class="side-badge">4</span></div>
     <div class="side-item" data-p="abandon"><svg><use href="#ic-x-c"/></svg><span>放棄紀錄</span></div>
   </aside>
 
@@ -606,37 +625,6 @@ body {
       </div>
     </div>
 
-    <!-- PAGE: DETAIL -->
-    <div class="page" id="p-detail">
-      <div class="page-header"><div class="page-title">購物明細</div><div class="page-desc">暫存區內所有獎品的詳細資訊</div></div>
-      <div class="table">
-        <div class="t-head" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;">
-          <div>圖片</div><div>獎品名稱</div><div>來源一番賞</div><div>賞別</div><div>花費</div><div>抽取時間</div>
-        </div>
-        <div class="table-scroll">
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i1"><svg><use href="#ic-figure"/></svg></div><div><div class="t-name">超級賽亞人孫悟空 極意功 Figure</div><div class="t-sub">約 25cm 模型 / 享玩拉麵</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div><span class="grade ga" style="position:static;">A賞</span></div><div class="t-cost">680 G</div><div class="t-time">03/22 14:32</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i3"><svg><use href="#ic-sword"/></svg></div><div><div class="t-name">炭治郎 水之呼吸 景品模型</div><div class="t-sub">約 20cm 模型 / 刀劍社</div></div><div class="t-source">鬼滅之刃 ~無限列車篇~</div><div><span class="grade ga" style="position:static;">A賞</span></div><div class="t-cost">550 G</div><div class="t-time">03/22 14:28</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i7"><svg><use href="#ic-trophy"/></svg></div><div><div class="t-name">達爾 超級賽亞人 Figure</div><div class="t-sub">約 22cm 模型 / 享玩拉麵</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div><span class="grade ga" style="position:static;">A賞</span></div><div class="t-cost">620 G</div><div class="t-time">03/21 13:08</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i4"><svg><use href="#ic-anchor"/></svg></div><div><div class="t-name">魯夫 五檔 尼卡造型 Figure</div><div class="t-sub">約 18cm 模型 / 海盜王</div></div><div class="t-source">ONE PIECE ~新世界篇~</div><div><span class="grade gb" style="position:static;">B賞</span></div><div class="t-cost">350 G</div><div class="t-time">03/21 20:15</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i3"><svg><use href="#ic-sword"/></svg></div><div><div class="t-name">煉獄杏壽郎 炎之呼吸 Figure</div><div class="t-sub">約 18cm 模型 / 刀劍社</div></div><div class="t-source">鬼滅之刃 ~無限列車篇~</div><div><span class="grade gb" style="position:static;">B賞</span></div><div class="t-cost">380 G</div><div class="t-time">03/22 12:10</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i2"><svg><use href="#ic-bolt"/></svg></div><div><div class="t-name">五條悟 無量空處 壓克力立牌</div><div class="t-sub">A4 尺寸 / 咒術堂</div></div><div class="t-source">咒術迴戰 ~澀谷事變~</div><div><span class="grade gb" style="position:static;">B賞</span></div><div class="t-cost">320 G</div><div class="t-time">03/21 19:44</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i2"><svg><use href="#ic-bolt"/></svg></div><div><div class="t-name">釘崎野薔薇 芻靈呪法 Figure</div><div class="t-sub">約 16cm 模型 / 咒術堂</div></div><div class="t-source">咒術迴戰 ~澀谷事變~</div><div><span class="grade gb" style="position:static;">B賞</span></div><div class="t-cost">350 G</div><div class="t-time">03/20 17:05</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i5"><svg><use href="#ic-star"/></svg></div><div><div class="t-name">佐助 須佐能乎 迷你吊飾</div><div class="t-sub">約 5cm / 忍者屋</div></div><div class="t-source">火影忍者 ~忍界大戰~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">200 G</div><div class="t-time">03/20 10:02</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i4"><svg><use href="#ic-anchor"/></svg></div><div><div class="t-name">索隆 三刀流 壓克力立牌</div><div class="t-sub">A4 尺寸 / 海盜王</div></div><div class="t-source">ONE PIECE ~新世界篇~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">220 G</div><div class="t-time">03/21 18:30</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i6"><svg><use href="#ic-gem"/></svg></div><div><div class="t-name">皮卡丘 毛絨公仔 15cm</div><div class="t-sub">玩偶 / 寶可夢中心</div></div><div class="t-source">寶可夢 ~旅途的夥伴~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">180 G</div><div class="t-time">03/20 09:58</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i3"><svg><use href="#ic-sword"/></svg></div><div><div class="t-name">禰豆子 木箱造型 收納盒</div><div class="t-sub">桌上收納 / 刀劍社</div></div><div class="t-source">鬼滅之刃 ~無限列車篇~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">200 G</div><div class="t-time">03/21 15:20</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i2"><svg><use href="#ic-bolt"/></svg></div><div><div class="t-name">伏黑惠 玉犬 文件夾</div><div class="t-sub">A4 資料夾 / 咒術堂</div></div><div class="t-source">咒術迴戰 ~澀谷事變~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">180 G</div><div class="t-time">03/20 22:15</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i6"><svg><use href="#ic-gem"/></svg></div><div><div class="t-name">伊布 進化系列 吊飾組</div><div class="t-sub">5入組 / 寶可夢中心</div></div><div class="t-source">寶可夢 ~旅途的夥伴~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">200 G</div><div class="t-time">03/20 19:30</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i1"><svg><use href="#ic-figure"/></svg></div><div><div class="t-name">悟飯 終極悟飯 壓克力鑰匙圈</div><div class="t-sub">約 6cm / 享玩拉麵</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div><span class="grade gc" style="position:static;">C賞</span></div><div class="t-cost">180 G</div><div class="t-time">03/19 22:15</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i1"><svg><use href="#ic-figure"/></svg></div><div><div class="t-name">弗利沙 最終形態 迷你模型</div><div class="t-sub">約 8cm / 享玩拉麵</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div><span class="grade gd" style="position:static;">D賞</span></div><div class="t-cost">150 G</div><div class="t-time">03/21 16:45</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i5"><svg><use href="#ic-star"/></svg></div><div><div class="t-name">喬巴 醫生版 馬克杯</div><div class="t-sub">陶瓷 350ml / 海盜王</div></div><div class="t-source">ONE PIECE ~新世界篇~</div><div><span class="grade gd" style="position:static;">D賞</span></div><div class="t-cost">120 G</div><div class="t-time">03/21 14:55</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i5"><svg><use href="#ic-star"/></svg></div><div><div class="t-name">卡卡西 寫輪眼 別針</div><div class="t-sub">金屬徽章 / 忍者屋</div></div><div class="t-source">火影忍者 ~忍界大戰~</div><div><span class="grade gd" style="position:static;">D賞</span></div><div class="t-cost">100 G</div><div class="t-time">03/20 20:40</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i4"><svg><use href="#ic-anchor"/></svg></div><div><div class="t-name">娜美 航海士 小毛巾</div><div class="t-sub">棉質手巾 / 海盜王</div></div><div class="t-source">ONE PIECE ~新世界篇~</div><div><span class="grade gd" style="position:static;">D賞</span></div><div class="t-cost">100 G</div><div class="t-time">03/20 18:12</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i3"><svg><use href="#ic-sword"/></svg></div><div><div class="t-name">我妻善逸 雷之呼吸 橡皮擦組</div><div class="t-sub">3入組 / 刀劍社</div></div><div class="t-source">鬼滅之刃 ~無限列車篇~</div><div><span class="grade gd" style="position:static;">D賞</span></div><div class="t-cost">80 G</div><div class="t-time">03/19 23:40</div></div>
-          <div class="t-row" style="grid-template-columns:64px 1fr 180px 80px 100px 130px;"><div class="t-img i7"><svg><use href="#ic-trophy"/></svg></div><div><div class="t-name">最後賞 限定配色 孫悟空 SP Figure</div><div class="t-sub">約 30cm 限定版 / 享玩拉麵</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div><span class="grade gl" style="position:static;">LAST</span></div><div class="t-cost">170 G</div><div class="t-time">03/22 14:33</div></div>
-        </div>
-      </div>
-    </div>
 
     <!-- PAGE: SHIP -->
     <div class="page" id="p-ship">
@@ -688,78 +676,49 @@ body {
       </div>
     </div>
 
-    <!-- PAGE: PENDING -->
-    <div class="page" id="p-pending">
-      <div class="page-header"><div class="page-title">待出貨訂單</div><div class="page-desc">已申請出貨、尚未寄出的訂單</div></div>
-      <div class="order-grid">
-        <div class="order">
-          <div class="order-top"><div><div class="order-id">#ORD-20260322-0847</div><div class="order-date">申請：2026/03/22</div></div><span class="tag t-pack">包裝中</span></div>
-          <div class="order-count">共 3 件獎品</div>
-          <div class="status-track">
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已申請</div></div>
-            <div class="st-line done"></div>
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">處理中</div></div>
-            <div class="st-line active"></div>
-            <div class="st-step active"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">包裝中</div></div>
-            <div class="st-line"></div>
-            <div class="st-step"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已寄出</div></div>
-          </div>
-          <div class="thumbs"><div class="thumb i1"><svg><use href="#ic-figure"/></svg><span class="tg ga">A</span></div><div class="thumb i3"><svg><use href="#ic-sword"/></svg><span class="tg ga">A</span></div><div class="thumb i5"><svg><use href="#ic-star"/></svg><span class="tg gc">C</span></div></div>
-          <div class="order-foot"><span>運費：免運</span><span>預計 3/25~3/29</span></div>
-        </div>
-        <div class="order">
-          <div class="order-top"><div><div class="order-id">#ORD-20260320-0632</div><div class="order-date">申請：2026/03/20</div></div><span class="tag t-process">處理中</span></div>
-          <div class="order-count">共 2 件獎品</div>
-          <div class="status-track">
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已申請</div></div>
-            <div class="st-line active"></div>
-            <div class="st-step active"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">處理中</div></div>
-            <div class="st-line"></div>
-            <div class="st-step"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">包裝中</div></div>
-            <div class="st-line"></div>
-            <div class="st-step"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已寄出</div></div>
-          </div>
-          <div class="thumbs"><div class="thumb i4"><svg><use href="#ic-anchor"/></svg><span class="tg gb">B</span></div><div class="thumb i6"><svg><use href="#ic-gem"/></svg><span class="tg gc">C</span></div></div>
-          <div class="order-foot"><span>運費：100 代幣</span><span>預計 3/27~3/31</span></div>
-        </div>
+    <!-- PAGE: ORDERS (combined pending + shipped) -->
+    <div class="page" id="p-orders">
+      <div class="page-header"><div class="page-title">出貨紀錄</div><div class="page-desc">所有出貨申請的狀態追蹤</div></div>
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="filterOrders('all',this)">全部 (4)</button>
+        <button class="ftab" onclick="filterOrders('pending',this)">待出貨 (2)</button>
+        <button class="ftab" onclick="filterOrders('shipped',this)">已出貨 (2)</button>
       </div>
-    </div>
-
-    <!-- PAGE: SHIPPED -->
-    <div class="page" id="p-shipped">
-      <div class="page-header"><div class="page-title">已出貨訂單</div><div class="page-desc">已寄出的訂單及物流追蹤</div></div>
-      <div class="order-grid">
-        <div class="order">
-          <div class="order-top"><div><div class="order-id">#ORD-20260315-0421</div><div class="order-date">寄出：2026/03/16</div></div><span class="tag t-done">已送達</span></div>
-          <div class="order-count">共 4 件獎品</div>
-          <div class="status-track">
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已申請</div></div>
-            <div class="st-line done"></div>
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">處理中</div></div>
-            <div class="st-line done"></div>
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">包裝中</div></div>
-            <div class="st-line done"></div>
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已送達</div></div>
-          </div>
-          <div class="thumbs"><div class="thumb i2"><svg><use href="#ic-bolt"/></svg><span class="tg ga">A</span></div><div class="thumb i1"><svg><use href="#ic-figure"/></svg><span class="tg gb">B</span></div><div class="thumb i5"><svg><use href="#ic-star"/></svg><span class="tg gc">C</span></div><div class="thumb i6"><svg><use href="#ic-gem"/></svg><span class="tg gd">D</span></div></div>
-          <div class="tracking"><div class="tl">物流單號（黑貓宅急便）</div><div class="tn">7230-4851-9027</div></div>
-          <div class="order-foot" style="margin-top:12px;"><span>送達：2026/03/19</span><a href="#">查看詳情</a></div>
+      <div class="abn-table">
+        <div class="abn-head" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+          <div>狀態</div><div>訂單編號</div><div>數量</div><div>申請日期</div><div>物流單號</div><div>預計/送達</div>
         </div>
-        <div class="order">
-          <div class="order-top"><div><div class="order-id">#ORD-20260310-0198</div><div class="order-date">寄出：2026/03/11</div></div><span class="tag t-ship">運送中</span></div>
-          <div class="order-count">共 1 件獎品</div>
-          <div class="status-track">
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">已申請</div></div>
-            <div class="st-line done"></div>
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">處理中</div></div>
-            <div class="st-line done"></div>
-            <div class="st-step done"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">包裝中</div></div>
-            <div class="st-line active"></div>
-            <div class="st-step active"><div class="st-dot"><svg><use href="#ic-check"/></svg></div><div class="st-label">運送中</div></div>
-          </div>
-          <div class="thumbs"><div class="thumb i7"><svg><use href="#ic-trophy"/></svg><span class="tg gl">L</span></div></div>
-          <div class="tracking"><div class="tl">物流單號（黑貓宅急便）</div><div class="tn">7230-5522-1038</div></div>
-          <div class="order-foot" style="margin-top:12px;"><span>預計 3/24~3/26</span><a href="#">查看詳情</a></div>
+        <div class="ord-row" data-type="pending" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+          <div><span class="tag t-pack">包裝中</span></div>
+          <div class="order-id">#ORD-20260322-0847</div>
+          <div class="t-name">3 件</div>
+          <div class="t-time">2026/03/22</div>
+          <div class="t-source">--</div>
+          <div class="t-time">03/25~03/29</div>
+        </div>
+        <div class="ord-row" data-type="pending" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+          <div><span class="tag t-process">處理中</span></div>
+          <div class="order-id">#ORD-20260320-0632</div>
+          <div class="t-name">2 件</div>
+          <div class="t-time">2026/03/20</div>
+          <div class="t-source">--</div>
+          <div class="t-time">03/27~03/31</div>
+        </div>
+        <div class="ord-row" data-type="shipped" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+          <div><span class="tag t-ship">運送中</span></div>
+          <div class="order-id">#ORD-20260310-0198</div>
+          <div class="t-name">1 件</div>
+          <div class="t-time">2026/03/10</div>
+          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--brand);cursor:pointer;">7230-5522-1038</div>
+          <div class="t-time">03/24~03/26</div>
+        </div>
+        <div class="ord-row" data-type="shipped" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+          <div><span class="tag t-done">已送達</span></div>
+          <div class="order-id">#ORD-20260315-0421</div>
+          <div class="t-name">4 件</div>
+          <div class="t-time">2026/03/15</div>
+          <div style="font-family:var(--mono);font-size:0.8rem;color:var(--brand);cursor:pointer;">7230-4851-9027</div>
+          <div class="t-time" style="color:var(--success);">03/19 已送達</div>
         </div>
       </div>
     </div>
@@ -787,7 +746,7 @@ body {
     <p>扣除運費 <span class="hl">0 代幣（免運）</span></p>
     <div class="modal-btns">
       <button class="btn btn-outline" onclick="hideOv('m-confirm')">取消</button>
-      <button class="btn btn-primary" onclick="hideOv('m-confirm');go('pending')">確認送出</button>
+      <button class="btn btn-primary" onclick="hideOv('m-confirm');go('orders')">確認送出</button>
     </div>
   </div>
 </div>
@@ -804,7 +763,7 @@ body {
 </div>
 
 <script>
-const names={cart:'獎品暫存區',detail:'購物明細',ship:'申請出貨',pending:'待出貨訂單',shipped:'已出貨訂單',abandon:'放棄紀錄'};
+const names={cart:'獎品暫存區',ship:'申請出貨',orders:'出貨紀錄',abandon:'放棄紀錄'};
 function go(id){
   document.querySelectorAll('.side-item').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -824,6 +783,13 @@ function applyCp(){
   document.getElementById('cp-ok').classList.add('show');
   document.getElementById('disc').style.display='flex';
   document.getElementById('tv').textContent='0 代幣';
+}
+function filterOrders(type,btn){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ord-row').forEach(r=>{
+    r.style.display=(type==='all'||r.dataset.type===type)?'grid':'none';
+  });
 }
 function showOv(id){document.getElementById(id).classList.add('show');}
 function hideOv(id){document.getElementById(id).classList.remove('show');}
