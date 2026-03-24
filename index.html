@@ -347,6 +347,46 @@ body {
   cursor: pointer; font-family: var(--font); white-space: nowrap;
 }
 .coupon-apply:hover { filter: brightness(1.2); }
+.cp-browse {
+  width: 100%; margin-top: 8px; padding: 9px 14px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-sm); color: var(--text2);
+  font-size: 0.8rem; font-weight: 500; font-family: var(--font);
+  cursor: pointer; text-align: left;
+  transition: all 140ms var(--ease);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.cp-browse:hover { border-color: var(--border-strong); color: var(--text); }
+.cp-browse.open { border-color: var(--brand); color: var(--brand); }
+
+.cp-list {
+  display: none; margin-top: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-sm); overflow: hidden;
+}
+.cp-list.show { display: block; animation: fadeIn 180ms var(--ease); }
+
+.cp-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 100ms var(--ease);
+}
+.cp-item:last-child { border-bottom: none; }
+.cp-item:hover { background: var(--brand-light); }
+.cp-item.picked { background: var(--brand-light); }
+
+.cp-info { flex: 1; }
+.cp-code {
+  font-size: 0.82rem; font-weight: 700; color: var(--text);
+  font-family: var(--mono); margin-bottom: 2px;
+}
+.cp-desc { font-size: 0.72rem; color: var(--text3); }
+
+.cp-val {
+  font-size: 0.85rem; font-weight: 700; color: var(--success);
+  margin-left: 12px; white-space: nowrap;
+}
+
 .coupon-ok {
   margin-top: 8px; padding: 8px 12px;
   background: var(--success-light); border: 1px solid rgba(16,185,129,0.2);
@@ -683,8 +723,27 @@ body {
           <div class="divider"></div>
           <h3>折扣碼</h3>
           <div class="field">
-            <div class="coupon-row"><input value="SPRING50" placeholder="輸入折扣碼"><button class="coupon-apply" onclick="applyCp()">套用</button></div>
-            <div class="coupon-ok" id="cp-ok">已套用「春季免運」，折抵 50 代幣</div>
+            <div class="coupon-row"><input id="cp-input" value="" placeholder="輸入折扣碼或選擇下方優惠"><button class="coupon-apply" onclick="applyCpInput()">套用</button></div>
+            <button class="cp-browse" onclick="toggleCpList()">查看可用折扣碼 <span id="cp-arrow">&#x25BE;</span></button>
+            <div class="cp-list" id="cp-list">
+              <div class="cp-item" onclick="pickCp('SPRING50','春季免運','運費折抵 50 代幣',50)">
+                <div class="cp-info"><div class="cp-code">SPRING50</div><div class="cp-desc">春季免運 — 運費折抵 50 代幣</div></div>
+                <div class="cp-val">-50</div>
+              </div>
+              <div class="cp-item" onclick="pickCp('NEWUSER100','新會員禮','首次出貨折抵 100 代幣',100)">
+                <div class="cp-info"><div class="cp-code">NEWUSER100</div><div class="cp-desc">新會員禮 — 首次出貨折抵 100 代幣</div></div>
+                <div class="cp-val">-100</div>
+              </div>
+              <div class="cp-item" onclick="pickCp('GACHA2026','周年慶','運費全額折抵（限一次）',999)">
+                <div class="cp-info"><div class="cp-code">GACHA2026</div><div class="cp-desc">周年慶 — 運費全額折抵（限一次）</div></div>
+                <div class="cp-val">免運</div>
+              </div>
+              <div class="cp-item" onclick="pickCp('VIP30','VIP 專屬','運費折抵 30 代幣',30)">
+                <div class="cp-info"><div class="cp-code">VIP30</div><div class="cp-desc">VIP 專屬 — 運費折抵 30 代幣</div></div>
+                <div class="cp-val">-30</div>
+              </div>
+            </div>
+            <div class="coupon-ok" id="cp-ok"></div>
           </div>
           <div class="divider"></div>
           <div class="s-row"><span class="l">已選獎品</span><span class="r">2 件</span></div>
@@ -832,9 +891,47 @@ function sortBy(mode,btn){
     });
   }
 }
-function applyCp(){
-  document.getElementById('cp-ok').classList.add('show');
+function toggleCpList(){
+  const list=document.getElementById('cp-list');
+  const btn=document.querySelector('.cp-browse');
+  list.classList.toggle('show');
+  btn.classList.toggle('open');
+  document.getElementById('cp-arrow').innerHTML=list.classList.contains('show')?'&#x25B4;':'&#x25BE;';
+}
+function pickCp(code,name,desc,val){
+  document.getElementById('cp-input').value=code;
+  document.querySelectorAll('.cp-item').forEach(i=>i.classList.remove('picked'));
+  event.currentTarget.classList.add('picked');
+  applyCoupon(code,name,desc,val);
+  toggleCpList();
+}
+function applyCpInput(){
+  const code=document.getElementById('cp-input').value.trim().toUpperCase();
+  const map={
+    'SPRING50':{name:'春季免運',desc:'運費折抵 50 代幣',val:50},
+    'NEWUSER100':{name:'新會員禮',desc:'首次出貨折抵 100 代幣',val:100},
+    'GACHA2026':{name:'周年慶',desc:'運費全額折抵',val:999},
+    'VIP30':{name:'VIP 專屬',desc:'運費折抵 30 代幣',val:30},
+  };
+  if(map[code]){
+    applyCoupon(code,map[code].name,map[code].desc,map[code].val);
+    document.querySelectorAll('.cp-item').forEach(i=>{
+      i.classList.toggle('picked',i.querySelector('.cp-code').textContent===code);
+    });
+  } else {
+    const ok=document.getElementById('cp-ok');
+    ok.textContent='無效的折扣碼';
+    ok.style.background='var(--danger-light)';ok.style.borderColor='rgba(239,68,68,0.2)';ok.style.color='var(--danger)';
+    ok.classList.add('show');
+  }
+}
+function applyCoupon(code,name,desc,val){
+  const ok=document.getElementById('cp-ok');
+  ok.textContent='已套用「'+name+'」，'+desc;
+  ok.style.background='';ok.style.borderColor='';ok.style.color='';
+  ok.classList.add('show');
   document.getElementById('disc').style.display='flex';
+  document.querySelector('#disc .r').textContent=val>=999?'免運費':'-'+val+' 代幣';
   document.getElementById('tv').textContent='0 代幣';
 }
 function filterOrders(type,btn){
