@@ -711,16 +711,7 @@ body {
     <div class="page active" id="p-cart">
       <div class="page-header">
         <div class="page-title">獎品暫存區</div>
-        <div class="page-desc">已抽中的獎品暫存在此，10 天內未申請出貨將自動寄出 <button class="demo-toggle" onclick="toggleEmpty('cart')">展示空狀態<span class="opt-tag">非必要</span></button></div>
-      </div>
-      <div class="stats">
-        <div class="stat"><div class="label">暫存容量</div><div class="value red">20 / 20 件（已滿）</div></div>
-        <div class="stat"><div class="label">目前累計</div><div class="value amber">5,330 代幣</div></div>
-        <div class="stat"><div class="label">最早自動出貨</div><div class="value">3 天後</div></div>
-      </div>
-      <div class="free-ship-bar">
-        <div class="fs-text">累計金額 <strong>5,330 代幣</strong>，已達免運門檻（3,000 代幣）</div>
-        <div class="fs-bar-wrap"><div class="fs-bar full" style="width:100%"></div></div>
+        <div class="page-desc">已抽中的獎品暫存在此，10 天內未申請出貨將自動寄出</div>
       </div>
       <div class="toolbar">
         <div class="toolbar-left"><button class="tb-btn" onclick="toggleAll()">全選 / 取消全選</button></div>
@@ -1096,8 +1087,6 @@ function toggleEmpty(page){
     const es=document.getElementById('cart-empty');
     const show=!es.classList.contains('show');
     es.classList.toggle('show');
-    document.querySelector('#p-cart .stats').style.display=show?'none':'grid';
-    document.querySelector('#p-cart .free-ship-bar').style.display=show?'none':'block';
     document.querySelector('#p-cart .toolbar').style.display=show?'none':'flex';
     document.querySelector('#p-cart .table').style.display=show?'none':'block';
     document.getElementById('cart-actions').style.display=show?'none':'flex';
