@@ -574,10 +574,85 @@ body {
 .ord-row {
   display: grid; padding: 14px 20px; align-items: center;
   border-bottom: 1px solid var(--border);
-  transition: background 140ms var(--ease);
+  transition: background 140ms var(--ease); cursor: pointer;
 }
 .ord-row:last-child { border-bottom: none; }
 .ord-row:hover { background: rgba(255,255,255,0.02); }
+.ord-row .chevron { font-size: 0.7rem; color: var(--text3); transition: transform 200ms var(--ease); text-align: center; }
+.ord-row.expanded .chevron { transform: rotate(180deg); color: var(--brand); }
+
+/* ORDER EXPAND DETAIL */
+.ord-expand {
+  display: none; padding: 0 20px 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,217,255,0.02);
+}
+.ord-expand.show { display: block; animation: fadeIn 180ms var(--ease); }
+.ord-prizes { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; }
+.ord-prize {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; background: var(--bg-elevated);
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  font-size: 0.78rem;
+}
+.ord-prize .op-thumb {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: grid; place-items: center; flex-shrink: 0;
+}
+.ord-prize .op-thumb svg { width: 12px; height: 12px; opacity: 0.4; color: #fff; }
+
+/* OPT TAG */
+.opt-tag {
+  display: inline-block; padding: 2px 10px; border-radius: 10px;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em;
+  background: var(--border); color: var(--text3);
+  margin-left: 8px; vertical-align: middle;
+}
+
+/* EMPTY STATE */
+.empty-state {
+  display: none; text-align: center; padding: 80px 40px;
+}
+.empty-state.show { display: block; }
+.empty-icon {
+  width: 64px; height: 64px; margin: 0 auto 16px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: 50%; display: grid; place-items: center;
+}
+.empty-icon svg { width: 28px; height: 28px; color: var(--text3); }
+.empty-title { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: var(--text2); }
+.empty-desc { font-size: 0.82rem; color: var(--text3); }
+.demo-toggle {
+  font-size: 0.7rem; color: var(--text3); background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  padding: 4px 12px; cursor: pointer; font-family: var(--font);
+  margin-left: 12px; transition: all 140ms var(--ease);
+}
+.demo-toggle:hover { color: var(--text2); border-color: var(--border-strong); }
+
+/* ADDRESS SELECTOR */
+.addr-selector { margin-bottom: 16px; }
+.addr-opt {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: var(--r-sm); margin-bottom: 6px;
+  cursor: pointer; transition: all 140ms var(--ease);
+}
+.addr-opt:hover { border-color: var(--border-strong); }
+.addr-opt.on { border-color: var(--brand); background: var(--brand-light); }
+.addr-radio {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border-strong); flex-shrink: 0;
+  display: grid; place-items: center; margin-top: 2px;
+}
+.addr-opt.on .addr-radio { border-color: var(--brand); }
+.addr-opt.on .addr-radio::after {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--brand);
+}
+.addr-info { flex: 1; }
+.addr-label { font-size: 0.78rem; font-weight: 600; margin-bottom: 2px; }
+.addr-text { font-size: 0.72rem; color: var(--text3); }
 </style>
 </head>
 <body>
@@ -636,7 +711,7 @@ body {
     <div class="page active" id="p-cart">
       <div class="page-header">
         <div class="page-title">獎品暫存區</div>
-        <div class="page-desc">已抽中的獎品暫存在此，10 天內未申請出貨將自動寄出</div>
+        <div class="page-desc">已抽中的獎品暫存在此，10 天內未申請出貨將自動寄出 <button class="demo-toggle" onclick="toggleEmpty('cart')">展示空狀態<span class="opt-tag">非必要</span></button></div>
       </div>
       <div class="stats">
         <div class="stat"><div class="label">暫存容量</div><div class="value red">20 / 20 件（已滿）</div></div>
@@ -679,9 +754,15 @@ body {
           <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i7"><svg><use href="#ic-trophy"/></svg><span class="grade gl">LAST</span></div><div><div class="t-name">最後賞 限定配色 孫悟空 SP Figure</div><div class="t-sub">約 30cm 限定版</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div class="t-cost">170 G</div><div class="t-time">03/22 14:33</div></div>
         </div>
       </div>
-      <div class="actions">
+      <div class="actions" id="cart-actions">
         <button class="btn btn-danger" onclick="showOv('m-abandon')">放棄已選商品</button>
         <button class="btn btn-primary" onclick="go('ship')">申請出貨</button>
+      </div>
+      <!-- EMPTY STATE (hidden, demo only) -->
+      <div class="empty-state" id="cart-empty">
+        <div class="empty-icon"><svg><use href="#ic-box"/></svg></div>
+        <div class="empty-title">暫存區沒有獎品</div>
+        <div class="empty-desc">快去抽獎吧！抽中的獎品會暫存在這裡</div>
       </div>
     </div>
 
@@ -716,10 +797,24 @@ body {
           </div>
         </div>
         <div class="ship-panel">
-          <h3>收件資訊</h3>
-          <div class="field"><label>收件人</label><input value="王小明"></div>
-          <div class="field"><label>電話</label><input value="0912-345-678"></div>
-          <div class="field"><label>地址</label><textarea>106 台北市大安區忠孝東路三段 123 號 5 樓</textarea></div>
+          <h3>收件資訊 <span class="opt-tag">非必要</span></h3>
+          <div class="addr-selector">
+            <div class="addr-opt on" onclick="selectAddr(this,'王小明','0912-345-678','106 台北市大安區忠孝東路三段 123 號 5 樓')">
+              <div class="addr-radio"></div>
+              <div class="addr-info"><div class="addr-label">住家地址</div><div class="addr-text">王小明 / 0912-345-678<br>106 台北市大安區忠孝東路三段 123 號 5 樓</div></div>
+            </div>
+            <div class="addr-opt" onclick="selectAddr(this,'王小明','0912-345-678','114 台北市內湖區瑞光路 88 號 3 樓')">
+              <div class="addr-radio"></div>
+              <div class="addr-info"><div class="addr-label">公司地址</div><div class="addr-text">王小明 / 0912-345-678<br>114 台北市內湖區瑞光路 88 號 3 樓</div></div>
+            </div>
+            <div class="addr-opt" onclick="selectAddr(this,'李大華','0988-765-432','220 新北市板橋區文化路一段 66 號 12 樓')">
+              <div class="addr-radio"></div>
+              <div class="addr-info"><div class="addr-label">代收地址</div><div class="addr-text">李大華 / 0988-765-432<br>220 新北市板橋區文化路一段 66 號 12 樓</div></div>
+            </div>
+          </div>
+          <div class="field"><label>收件人</label><input id="addr-name" value="王小明"></div>
+          <div class="field"><label>電話</label><input id="addr-phone" value="0912-345-678"></div>
+          <div class="field"><label>地址</label><textarea id="addr-addr">106 台北市大安區忠孝東路三段 123 號 5 樓</textarea></div>
           <div class="divider"></div>
           <h3>折扣碼</h3>
           <div class="field">
@@ -757,47 +852,83 @@ body {
 
     <!-- PAGE: ORDERS (combined pending + shipped) -->
     <div class="page" id="p-orders">
-      <div class="page-header"><div class="page-title">出貨紀錄</div><div class="page-desc">所有出貨申請的狀態追蹤</div></div>
+      <div class="page-header"><div class="page-title">出貨紀錄</div><div class="page-desc">所有出貨申請的狀態追蹤 — 點擊訂單可展開明細<span class="opt-tag">非必要</span> <button class="demo-toggle" onclick="toggleEmptyOrders()">展示空狀態<span class="opt-tag">非必要</span></button></div></div>
       <div class="filter-tabs">
         <button class="ftab active" onclick="filterOrders('all',this)">全部 (4)</button>
         <button class="ftab" onclick="filterOrders('pending',this)">待出貨 (2)</button>
         <button class="ftab" onclick="filterOrders('shipped',this)">已出貨 (2)</button>
       </div>
-      <div class="abn-table">
-        <div class="abn-head" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
-          <div>狀態</div><div>訂單編號</div><div>數量</div><div>申請日期</div><div>物流單號</div><div>預計/送達</div>
+      <!-- EMPTY STATE (hidden, demo only) -->
+      <div class="empty-state" id="orders-empty">
+        <div class="empty-icon"><svg><use href="#ic-truck"/></svg></div>
+        <div class="empty-title">尚無出貨紀錄</div>
+        <div class="empty-desc">申請出貨後，訂單會顯示在這裡</div>
+      </div>
+      <div class="abn-table" id="orders-table">
+        <div class="abn-head" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
+          <div>狀態</div><div>訂單編號</div><div>數量</div><div>申請日期</div><div>物流單號</div><div>預計/送達</div><div></div>
         </div>
-        <div class="ord-row" data-type="pending" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+        <div class="ord-row" data-type="pending" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
           <div><span class="tag t-pack">包裝中</span></div>
           <div class="order-id">#ORD-20260322-0847</div>
           <div class="t-name">3 件</div>
           <div class="t-time">2026/03/22</div>
           <div class="t-source">--</div>
           <div class="t-time">03/25~03/29</div>
+          <div class="chevron">&#x25BE;</div>
         </div>
-        <div class="ord-row" data-type="pending" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+        <div class="ord-expand" data-type="pending">
+          <div class="ord-prizes">
+            <div class="ord-prize"><div class="op-thumb i1"><svg><use href="#ic-figure"/></svg></div><span style="color:#D97706;font-weight:700;">A賞</span> 孫悟空 極意功 Figure</div>
+            <div class="ord-prize"><div class="op-thumb i3"><svg><use href="#ic-sword"/></svg></div><span style="color:#64748B;font-weight:700;">B賞</span> 煉獄杏壽郎 Figure</div>
+            <div class="ord-prize"><div class="op-thumb i6"><svg><use href="#ic-gem"/></svg></div><span style="color:#B45309;font-weight:700;">C賞</span> 皮卡丘 毛絨公仔</div>
+          </div>
+        </div>
+        <div class="ord-row" data-type="pending" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
           <div><span class="tag t-process">處理中</span></div>
           <div class="order-id">#ORD-20260320-0632</div>
           <div class="t-name">2 件</div>
           <div class="t-time">2026/03/20</div>
           <div class="t-source">--</div>
           <div class="t-time">03/27~03/31</div>
+          <div class="chevron">&#x25BE;</div>
         </div>
-        <div class="ord-row" data-type="shipped" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+        <div class="ord-expand" data-type="pending">
+          <div class="ord-prizes">
+            <div class="ord-prize"><div class="op-thumb i2"><svg><use href="#ic-bolt"/></svg></div><span style="color:#64748B;font-weight:700;">B賞</span> 五條悟 壓克力立牌</div>
+            <div class="ord-prize"><div class="op-thumb i5"><svg><use href="#ic-star"/></svg></div><span style="color:#3B82F6;font-weight:700;">D賞</span> 喬巴 馬克杯</div>
+          </div>
+        </div>
+        <div class="ord-row" data-type="shipped" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
           <div><span class="tag t-ship">運送中</span></div>
           <div class="order-id">#ORD-20260310-0198</div>
           <div class="t-name">1 件</div>
           <div class="t-time">2026/03/10</div>
           <div style="font-family:var(--mono);font-size:0.8rem;color:var(--brand);cursor:pointer;">7230-5522-1038</div>
           <div class="t-time">03/24~03/26</div>
+          <div class="chevron">&#x25BE;</div>
         </div>
-        <div class="ord-row" data-type="shipped" style="grid-template-columns:90px 160px 80px 120px 160px 130px;">
+        <div class="ord-expand" data-type="shipped">
+          <div class="ord-prizes">
+            <div class="ord-prize"><div class="op-thumb i4"><svg><use href="#ic-anchor"/></svg></div><span style="color:#D97706;font-weight:700;">A賞</span> 魯夫 五檔 Figure</div>
+          </div>
+        </div>
+        <div class="ord-row" data-type="shipped" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
           <div><span class="tag t-done">已送達</span></div>
           <div class="order-id">#ORD-20260315-0421</div>
           <div class="t-name">4 件</div>
           <div class="t-time">2026/03/15</div>
           <div style="font-family:var(--mono);font-size:0.8rem;color:var(--brand);cursor:pointer;">7230-4851-9027</div>
           <div class="t-time" style="color:var(--success);">03/19 已送達</div>
+          <div class="chevron">&#x25BE;</div>
+        </div>
+        <div class="ord-expand" data-type="shipped">
+          <div class="ord-prizes">
+            <div class="ord-prize"><div class="op-thumb i2"><svg><use href="#ic-bolt"/></svg></div><span style="color:#64748B;font-weight:700;">B賞</span> 釘崎野薔薇 Figure</div>
+            <div class="ord-prize"><div class="op-thumb i4"><svg><use href="#ic-anchor"/></svg></div><span style="color:#B45309;font-weight:700;">C賞</span> 索隆 壓克力立牌</div>
+            <div class="ord-prize"><div class="op-thumb i3"><svg><use href="#ic-sword"/></svg></div><span style="color:#B45309;font-weight:700;">C賞</span> 禰豆子 收納盒</div>
+            <div class="ord-prize"><div class="op-thumb i5"><svg><use href="#ic-star"/></svg></div><span style="color:#3B82F6;font-weight:700;">D賞</span> 卡卡西 別針</div>
+          </div>
         </div>
       </div>
     </div>
@@ -938,8 +1069,54 @@ function filterOrders(type,btn){
   document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.ord-row').forEach(r=>{
-    r.style.display=(type==='all'||r.dataset.type===type)?'grid':'none';
+    const show=type==='all'||r.dataset.type===type;
+    r.style.display=show?'grid':'none';
+    r.classList.remove('expanded');
   });
+  document.querySelectorAll('.ord-expand').forEach(e=>{
+    const show=type==='all'||e.dataset.type===type;
+    e.style.display='none';
+    e.classList.remove('show');
+  });
+}
+// Toggle order expand detail (非必要)
+function toggleOrd(row){
+  const exp=row.nextElementSibling;
+  if(!exp||!exp.classList.contains('ord-expand'))return;
+  const open=exp.classList.contains('show');
+  // Close all first
+  document.querySelectorAll('.ord-row').forEach(r=>r.classList.remove('expanded'));
+  document.querySelectorAll('.ord-expand').forEach(e=>e.classList.remove('show'));
+  if(!open){row.classList.add('expanded');exp.classList.add('show');}
+}
+// Toggle empty state demo (非必要)
+function toggleEmpty(page){
+  if(page==='cart'){
+    const es=document.getElementById('cart-empty');
+    const show=!es.classList.contains('show');
+    es.classList.toggle('show');
+    document.querySelector('#p-cart .stats').style.display=show?'none':'grid';
+    document.querySelector('#p-cart .free-ship-bar').style.display=show?'none':'block';
+    document.querySelector('#p-cart .toolbar').style.display=show?'none':'flex';
+    document.querySelector('#p-cart .table').style.display=show?'none':'block';
+    document.getElementById('cart-actions').style.display=show?'none':'flex';
+  }
+}
+// Toggle orders empty state demo (非必要)
+function toggleEmptyOrders(){
+  const es=document.getElementById('orders-empty');
+  const show=!es.classList.contains('show');
+  es.classList.toggle('show');
+  document.getElementById('orders-table').style.display=show?'none':'block';
+  document.querySelector('#p-orders .filter-tabs').style.display=show?'none':'flex';
+}
+// Select saved address (非必要)
+function selectAddr(opt,name,phone,addr){
+  document.querySelectorAll('.addr-opt').forEach(a=>a.classList.remove('on'));
+  opt.classList.add('on');
+  document.getElementById('addr-name').value=name;
+  document.getElementById('addr-phone').value=phone;
+  document.getElementById('addr-addr').value=addr;
 }
 function showOv(id){document.getElementById(id).classList.add('show');}
 function hideOv(id){document.getElementById(id).classList.remove('show');}
