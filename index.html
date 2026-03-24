@@ -5,1124 +5,769 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GACHA+ 購物車系統</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Dela+Gothic+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ===== RESET ===== */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+/* ===== S22 DESIGN TOKENS — Dark Mode Elegance ===== */
 :root {
-  --bg: #0b0b12;
-  --bg-side: #101019;
-  --bg-main: #0f0f18;
-  --bg-card: #181828;
-  --bg-card-h: #1f1f34;
-  --bg-input: #151522;
-  --border: #282842;
-  --border-h: #3a3a5a;
-  --text: #ededf5;
-  --text2: #9997b0;
-  --text3: #5e5c76;
-  --gold: #ffcc00;
-  --orange: #ff7730;
-  --cyan: #00d4f5;
-  --pink: #ff3b7a;
-  --purple: #8b6cef;
-  --green: #2ecc71;
-  --red: #e74c3c;
-  --yellow: #f1c40f;
-  --r: 14px;
-  --r-sm: 10px;
+  --bg: #000000;
+  --bg-secondary: #0A0A0B;
+  --bg-elevated: #141414;
+  --bg-surface: #1A1A1A;
+  --border: #262626;
+  --border-strong: #404040;
+  --border-glow: rgba(0, 217, 255, 0.3);
+  --text: #FFFFFF;
+  --text2: #A3A3A3;
+  --text3: #525252;
+  --brand: #00D9FF;
+  --brand-hover: #00c2e6;
+  --brand-active: #00aace;
+  --brand-light: rgba(0, 217, 255, 0.08);
+  --purple: #7C3AED;
+  --purple-light: rgba(124, 58, 237, 0.1);
+  --success: #10B981;
+  --success-light: rgba(16, 185, 129, 0.1);
+  --warning: #F59E0B;
+  --warning-light: rgba(245, 158, 11, 0.1);
+  --danger: #EF4444;
+  --danger-light: rgba(239, 68, 68, 0.08);
+  --gold: #F59E0B;
+  --gold-light: rgba(245, 158, 11, 0.08);
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.5);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.6);
+  --glow: 0 0 40px rgba(0, 217, 255, 0.15);
+  --font: 'JetBrains Mono', 'Noto Sans TC', monospace;
+  --mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-html { font-size: 15px; }
+html { font-size: 16px; }
 body {
-  font-family: 'Noto Sans TC', -apple-system, sans-serif;
-  background: var(--bg);
+  font-family: var(--font);
+  background: var(--bg-secondary);
   color: var(--text);
-  min-height: 100vh;
   line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ========== SVG DEFS ========== */
+/* ===== SVG DEFS ===== */
 .svg-defs { display: none; }
 
-/* ========== TOP NAV ========== */
+/* ===== TOP NAV ===== */
 .topnav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 64px;
-  background: rgba(11,11,18,0.92);
-  backdrop-filter: blur(24px);
+  height: 64px; background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 32px;
 }
 
-.topnav-left { display: flex; align-items: center; gap: 32px; }
+.topnav-left { display: flex; align-items: center; gap: 28px; }
 
 .logo {
-  font-family: 'Dela Gothic One', sans-serif;
-  font-size: 1.4rem;
-  background: linear-gradient(135deg, var(--gold), var(--orange));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  letter-spacing: 2px;
+  font-size: 1.2rem; font-weight: 800; color: var(--text);
+  letter-spacing: 0.04em;
 }
+.logo span { color: var(--brand); text-shadow: 0 0 20px rgba(0,217,255,0.4); }
 
-.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 0.875rem; }
 .breadcrumb .sep { color: var(--text3); }
-.breadcrumb .current { color: var(--gold); font-weight: 700; }
+.breadcrumb .current { color: var(--brand); font-weight: 600; }
 .breadcrumb .parent { color: var(--text2); }
 
-.topnav-right { display: flex; align-items: center; gap: 20px; }
+.topnav-right { display: flex; align-items: center; gap: 16px; }
 
 .coin-pill {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  padding: 7px 18px; border-radius: 24px;
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  padding: 6px 14px; border-radius: 20px; font-size: 0.875rem; font-weight: 600;
 }
-.coin-dot {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--gold), var(--orange));
-  display: grid; place-items: center;
-  font-size: 0.55rem; font-weight: 900; color: #000;
-}
-.coin-val { font-size: 0.95rem; font-weight: 700; }
+.coin-pill svg { color: var(--gold); }
 
 .avatar {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--purple), var(--pink));
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--purple); color: #fff;
   display: grid; place-items: center;
-  font-size: 0.9rem; font-weight: 700; color: #fff;
-  cursor: pointer;
+  font-size: 0.85rem; font-weight: 700;
 }
 
-/* ========== LAYOUT ========== */
-.layout {
-  display: flex;
-  padding-top: 64px;
-  min-height: 100vh;
-}
+/* ===== LAYOUT ===== */
+.layout { display: flex; padding-top: 64px; min-height: 100vh; }
 
-/* ========== SIDEBAR ========== */
+/* ===== SIDEBAR ===== */
 .sidebar {
-  width: 240px;
-  flex-shrink: 0;
-  background: var(--bg-side);
+  width: 232px; flex-shrink: 0;
+  background: var(--bg-secondary);
   border-right: 1px solid var(--border);
-  padding: 24px 0;
-  position: fixed;
-  top: 64px;
-  bottom: 0;
-  left: 0;
-  overflow-y: auto;
+  position: fixed; top: 64px; bottom: 0; left: 0;
+  padding: 20px 0; overflow-y: auto;
 }
 
-.side-label {
+.side-group {
   font-size: 0.7rem; font-weight: 700; color: var(--text3);
-  letter-spacing: 2px; text-transform: uppercase;
-  padding: 0 24px; margin-bottom: 12px; margin-top: 20px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 6px 20px 8px; margin-top: 16px;
 }
-
-.side-label:first-child { margin-top: 0; }
+.side-group:first-child { margin-top: 0; }
 
 .side-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 24px;
-  font-size: 0.9rem; font-weight: 500;
-  color: var(--text2);
-  cursor: pointer; transition: all 0.15s;
-  border-left: 3px solid transparent;
-  position: relative;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; margin: 2px 8px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text2);
+  border-radius: var(--r-sm); cursor: pointer;
+  transition: all 140ms var(--ease);
 }
-
-.side-item:hover { background: rgba(255,255,255,0.03); color: var(--text); }
-
+.side-item:hover { background: var(--bg-elevated); color: var(--text); }
 .side-item.active {
-  color: var(--gold);
-  background: rgba(255,204,0,0.04);
-  border-left-color: var(--gold);
-  font-weight: 700;
+  background: var(--brand-light); color: var(--brand); font-weight: 600;
 }
-
-.side-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.side-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 
 .side-badge {
   margin-left: auto;
-  background: var(--pink);
-  color: #fff; font-size: 0.65rem; font-weight: 800;
-  width: 20px; height: 20px; border-radius: 50%;
-  display: grid; place-items: center;
+  background: var(--brand); color: #000;
+  font-size: 0.65rem; font-weight: 700;
+  padding: 1px 7px; border-radius: 10px;
+  min-width: 20px; text-align: center;
 }
 
-/* ========== MAIN ========== */
+/* ===== MAIN ===== */
 .main {
-  flex: 1;
-  margin-left: 240px;
+  flex: 1; margin-left: 232px;
   padding: 32px 40px;
-  max-width: 1200px;
+  max-width: 1100px;
 }
 
-/* ========== PAGE ========== */
+/* ===== PAGE ===== */
 .page { display: none; }
-.page.active { display: block; animation: fadeIn 0.25s ease; }
+.page.active { display: block; animation: fadeIn 220ms var(--ease); }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.page-title {
-  font-size: 1.5rem; font-weight: 900;
-  margin-bottom: 8px;
+.page-header { margin-bottom: 28px; }
+.page-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+.page-desc { font-size: 0.875rem; color: var(--text2); }
+
+/* ===== STAT CARDS ===== */
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-bottom: 24px;
 }
 
-.page-desc {
-  font-size: 0.9rem; color: var(--text2);
-  margin-bottom: 28px;
+.stat {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 20px 24px;
 }
+.stat .label { font-size: 0.75rem; color: var(--text3); font-weight: 500; margin-bottom: 6px; letter-spacing: 0.04em; }
+.stat .value { font-size: 1.25rem; font-weight: 700; }
+.stat .value.blue { color: var(--brand); text-shadow: 0 0 16px rgba(0,217,255,0.3); }
+.stat .value.amber { color: var(--gold); }
 
-/* ========== INFO CARDS ROW ========== */
-.info-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.info-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 20px 24px;
-  display: flex; align-items: center; gap: 16px;
-}
-
-.info-icon {
-  width: 48px; height: 48px; border-radius: 12px;
-  display: grid; place-items: center; flex-shrink: 0;
-}
-
-.info-icon svg { width: 24px; height: 24px; }
-
-.info-icon.purple { background: rgba(139,108,239,0.12); color: var(--purple); }
-.info-icon.gold { background: rgba(255,204,0,0.1); color: var(--gold); }
-.info-icon.cyan { background: rgba(0,212,245,0.1); color: var(--cyan); }
-
-.info-card .label { font-size: 0.78rem; color: var(--text3); margin-bottom: 2px; }
-.info-card .val { font-size: 1.2rem; font-weight: 800; }
-.val-gold { color: var(--gold); }
-.val-cyan { color: var(--cyan); }
-.val-green { color: var(--green); }
-
-/* ========== TOOLBAR ========== */
+/* ===== TOOLBAR ===== */
 .toolbar {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
-
-.toolbar-left { display: flex; align-items: center; gap: 16px; }
+.toolbar-left { display: flex; gap: 12px; align-items: center; }
 
 .tb-btn {
-  font-size: 0.85rem; font-weight: 600;
-  background: none; border: none; cursor: pointer;
-  font-family: inherit; color: var(--cyan);
-  padding: 8px 0;
+  font-size: 0.8rem; font-weight: 600; color: var(--brand);
+  background: none; border: none; cursor: pointer; font-family: var(--font);
 }
+.tb-btn:hover { color: var(--brand-hover); }
 
 .tb-sort {
-  font-size: 0.82rem; color: var(--text3);
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 16px;
-  cursor: pointer; font-family: inherit;
+  font-size: 0.8rem; color: var(--text2); font-weight: 500;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 7px 14px;
+  cursor: pointer; font-family: var(--font);
 }
 
-/* ========== PRIZE TABLE ========== */
-.prize-table {
-  width: 100%;
-  background: var(--bg-card);
+/* ===== TABLE ===== */
+.table {
+  width: 100%; background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: var(--r);
+  border-radius: var(--r-md);
   overflow: hidden;
 }
 
-.prize-thead {
+.t-head {
   display: grid;
-  grid-template-columns: 44px 80px 1fr 200px 120px 120px;
-  padding: 14px 20px;
-  font-size: 0.75rem; font-weight: 700;
-  color: var(--text3); text-transform: uppercase;
-  letter-spacing: 0.5px;
+  grid-template-columns: 40px 64px 1fr 180px 100px 110px;
+  padding: 12px 20px;
+  font-size: 0.72rem; font-weight: 600; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.06em;
   border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.015);
+  background: var(--bg-secondary);
 }
 
-.prize-row {
+.t-row {
   display: grid;
-  grid-template-columns: 44px 80px 1fr 200px 120px 120px;
-  padding: 16px 20px;
+  grid-template-columns: 40px 64px 1fr 180px 100px 110px;
+  padding: 14px 20px;
   align-items: center;
-  border-bottom: 1px solid rgba(40,40,66,0.5);
-  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+  transition: background 140ms var(--ease);
   cursor: pointer;
 }
+.t-row:last-child { border-bottom: none; }
+.t-row:hover { background: rgba(255,255,255,0.02); }
+.t-row.on { background: var(--brand-light); }
 
-.prize-row:last-child { border-bottom: none; }
-.prize-row:hover { background: var(--bg-card-h); }
-.prize-row.on { background: rgba(0,212,245,0.04); }
-
-.p-check {
-  width: 22px; height: 22px; border-radius: 6px;
-  border: 2px solid var(--border);
+.ck {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
   display: grid; place-items: center;
-  transition: all 0.15s; cursor: pointer;
+  transition: all 140ms var(--ease);
 }
-.p-check svg { opacity: 0; transition: 0.1s; width: 12px; height: 12px; }
-.prize-row.on .p-check { background: var(--cyan); border-color: var(--cyan); }
-.prize-row.on .p-check svg { opacity: 1; }
+.ck svg { width: 12px; height: 12px; opacity: 0; transition: opacity 100ms; }
+.t-row.on .ck { background: var(--brand); border-color: var(--brand); box-shadow: 0 0 12px rgba(0,217,255,0.3); }
+.t-row.on .ck svg { opacity: 1; color: #000; }
 
-.p-img {
-  width: 56px; height: 56px; border-radius: 10px;
-  display: grid; place-items: center;
-  position: relative; overflow: hidden;
+.t-img {
+  width: 48px; height: 48px; border-radius: var(--r-sm);
+  display: grid; place-items: center; position: relative; overflow: hidden;
 }
-.p-img svg { width: 26px; height: 26px; opacity: 0.45; position: relative; z-index: 1; }
+.t-img svg { width: 22px; height: 22px; opacity: 0.4; color: #fff; position: relative; z-index: 1; }
 
-.p-grade {
-  position: absolute; top: 3px; left: 3px;
-  padding: 1px 6px; border-radius: 4px;
-  font-size: 0.55rem; font-weight: 900; z-index: 2;
+.grade {
+  position: absolute; top: 2px; left: 2px;
+  padding: 1px 5px; border-radius: 3px;
+  font-size: 0.55rem; font-weight: 800; z-index: 2;
   letter-spacing: 0.5px;
 }
-.ga { background: var(--gold); color: #000; }
-.gb { background: #b0b0c0; color: #000; }
-.gc { background: #c07828; color: #fff; }
-.gd { background: #5a8eb4; color: #fff; }
-.gl { background: var(--pink); color: #fff; }
+.ga { background: #FBBF24; color: #000; }
+.gb { background: #94A3B8; color: #000; }
+.gc { background: #D97706; color: #000; }
+.gd { background: #60A5FA; color: #000; }
+.gl { background: #F43F5E; color: #fff; }
 
-.p-info {}
-.p-name { font-size: 0.92rem; font-weight: 700; margin-bottom: 2px; }
-.p-from { font-size: 0.75rem; color: var(--text3); }
-
-.p-source { font-size: 0.82rem; color: var(--text2); }
-
-.p-cost {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 0.95rem; font-weight: 800; color: var(--gold);
-}
-
-.mc {
-  width: 16px; height: 16px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--gold), var(--orange));
-  display: inline-grid; place-items: center;
-  font-size: 0.45rem; font-weight: 900; color: #000;
-}
-
-.p-time { font-size: 0.82rem; color: var(--text3); }
+.t-name { font-size: 0.875rem; font-weight: 600; margin-bottom: 1px; }
+.t-sub { font-size: 0.75rem; color: var(--text3); }
+.t-source { font-size: 0.8rem; color: var(--text2); }
+.t-cost { font-size: 0.875rem; font-weight: 700; color: var(--gold); }
+.t-time { font-size: 0.8rem; color: var(--text3); }
 
 /* IMG BG */
-.i1 { background: linear-gradient(135deg,#1e1040,#3a1860); }
-.i2 { background: linear-gradient(135deg,#102030,#183848); }
-.i3 { background: linear-gradient(135deg,#301018,#481828); }
-.i4 { background: linear-gradient(135deg,#103020,#184838); }
-.i5 { background: linear-gradient(135deg,#282010,#403018); }
-.i6 { background: linear-gradient(135deg,#201028,#381840); }
-.i7 { background: linear-gradient(135deg,#101830,#182848); }
+.i1{background:linear-gradient(135deg,#6366F1,#8B5CF6);} .i2{background:linear-gradient(135deg,#0EA5E9,#38BDF8);}
+.i3{background:linear-gradient(135deg,#EF4444,#F97316);} .i4{background:linear-gradient(135deg,#10B981,#34D399);}
+.i5{background:linear-gradient(135deg,#F59E0B,#FBBF24);} .i6{background:linear-gradient(135deg,#EC4899,#F472B6);}
+.i7{background:linear-gradient(135deg,#3B82F6,#6366F1);}
 
-/* ========== BOTTOM ACTION ========== */
-.action-row {
-  display: flex; justify-content: flex-end; gap: 12px;
-  margin-top: 24px;
-}
+/* ===== BUTTONS ===== */
+.actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
 
 .btn {
-  padding: 12px 28px; border: none; border-radius: var(--r-sm);
-  font-family: inherit; font-size: 0.92rem; font-weight: 700;
-  cursor: pointer; transition: all 0.15s;
+  padding: 10px 24px; border: none; border-radius: var(--r-sm);
+  font-family: var(--font); font-size: 0.875rem; font-weight: 600;
+  cursor: pointer; transition: all 140ms var(--ease);
 }
+.btn-primary { background: var(--brand); color: #000; font-weight: 700; }
+.btn-primary:hover { background: var(--brand-hover); box-shadow: 0 0 24px rgba(0,217,255,0.25); }
+.btn-outline { background: var(--bg-elevated); color: var(--text2); border: 1px solid var(--border) !important; }
+.btn-outline:hover { border-color: var(--border-strong) !important; color: var(--text); }
+.btn-danger { background: var(--danger-light); color: var(--danger); border: 1px solid rgba(239,68,68,0.2) !important; }
+.btn-danger:hover { background: rgba(239,68,68,0.15); }
 
-.btn-gold { background: linear-gradient(135deg,var(--gold),var(--orange)); color: #000; }
-.btn-gold:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-ghost { background: var(--bg-card); color: var(--text2); border: 1px solid var(--border) !important; }
-.btn-ghost:hover { border-color: var(--border-h) !important; color: var(--text); }
-.btn-red { background: rgba(231,76,60,0.1); color: var(--red); border: 1px solid rgba(231,76,60,0.2) !important; }
-.btn-red:hover { background: rgba(231,76,60,0.2); }
-.btn-purple { background: var(--purple); color: #fff; }
-.btn-purple:hover { filter: brightness(1.15); }
+/* ===== DETAIL ===== */
+.detail-layout { display: grid; grid-template-columns: 380px 1fr; gap: 36px; }
 
-/* ========== DETAIL ========== */
-.detail-layout { display: grid; grid-template-columns: 400px 1fr; gap: 36px; }
-
-.detail-hero {
+.detail-img {
   width: 100%; aspect-ratio: 1;
-  border-radius: 20px; overflow: hidden;
-  display: grid; place-items: center;
-  position: relative;
+  border-radius: var(--r-lg); overflow: hidden;
+  display: grid; place-items: center; position: relative;
 }
-.detail-hero svg { width: 100px; height: 100px; opacity: 0.3; position: relative; z-index: 1; }
-.detail-hero .p-grade { top: 18px; left: 18px; padding: 8px 18px; font-size: 0.95rem; }
-.detail-hero::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(11,11,18,0.7));
-}
+.detail-img svg { width: 80px; height: 80px; opacity: 0.3; color: #fff; position: relative; z-index: 1; }
+.detail-img .grade { top: 16px; left: 16px; padding: 6px 14px; font-size: 0.85rem; border-radius: 6px; }
 
-.detail-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+.detail-name { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.4; margin-bottom: 6px; }
+.detail-source { font-size: 0.95rem; color: var(--text2); margin-bottom: 24px; }
+
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
 
 .d-cell {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--r-sm); padding: 16px 20px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 14px 18px;
 }
-.d-cell .lbl { font-size: 0.75rem; color: var(--text3); margin-bottom: 4px; }
-.d-cell .val { font-size: 1.05rem; font-weight: 700; }
+.d-cell .lbl { font-size: 0.7rem; color: var(--text3); font-weight: 500; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+.d-cell .val { font-size: 0.95rem; font-weight: 650; }
+.val-blue { color: var(--brand) !important; text-shadow: 0 0 12px rgba(0,217,255,0.3); }
+.val-amber { color: var(--gold) !important; }
 
-.detail-right { padding-top: 12px; }
-.detail-name { font-size: 1.6rem; font-weight: 900; line-height: 1.4; margin-bottom: 8px; }
-.detail-source { font-size: 1rem; color: var(--text2); margin-bottom: 28px; }
-
-.timer-bar {
+.notice {
   display: flex; align-items: center; gap: 10px;
-  padding: 14px 20px; border-radius: var(--r-sm);
-  background: rgba(139,108,239,0.06);
-  border: 1px solid rgba(139,108,239,0.15);
-  color: var(--purple); font-size: 0.88rem;
-  margin-bottom: 28px;
+  padding: 12px 16px; border-radius: var(--r-sm);
+  font-size: 0.85rem; margin-bottom: 24px;
 }
-.timer-bar svg { width: 20px; height: 20px; flex-shrink: 0; }
-.timer-bar strong { color: #fff; }
+.notice.info { background: var(--brand-light); color: var(--brand); border: 1px solid rgba(0,217,255,0.2); }
+.notice svg { width: 18px; height: 18px; flex-shrink: 0; }
 
-/* ========== STEPPER ========== */
-.stepper {
-  display: flex; align-items: center; gap: 0;
-  margin-bottom: 36px;
-}
+/* ===== SHIPPING PAGE ===== */
+.ship-layout { display: grid; grid-template-columns: 1fr 340px; gap: 32px; }
 
-.s-step {
-  display: flex; align-items: center; gap: 0;
+.ship-list {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--r-md); overflow: hidden;
 }
 
-.s-dot {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: var(--bg-card); border: 2px solid var(--border);
-  display: grid; place-items: center;
-  font-size: 0.85rem; font-weight: 800; color: var(--text3);
-  transition: all 0.3s; flex-shrink: 0;
+.sl-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
 }
-.s-dot.now { background: var(--gold); border-color: var(--gold); color: #000; }
-.s-dot.ok { background: var(--green); border-color: var(--green); color: #fff; }
+.sl-item:last-child { border-bottom: none; }
 
-.s-label {
-  font-size: 0.78rem; color: var(--text3); font-weight: 500;
-  margin-left: 10px; white-space: nowrap;
+.sl-thumb {
+  width: 40px; height: 40px; border-radius: 8px;
+  display: grid; place-items: center; flex-shrink: 0;
 }
-.s-label.now { color: var(--gold); font-weight: 700; }
-.s-label.ok { color: var(--green); }
+.sl-thumb svg { width: 18px; height: 18px; opacity: 0.4; color: #fff; }
 
-.s-line { width: 60px; height: 3px; border-radius: 2px; background: var(--border); margin: 0 12px; }
-.s-line.ok { background: var(--green); }
+.sl-name { flex: 1; font-size: 0.85rem; font-weight: 600; }
+.sl-grade { font-weight: 700; margin-right: 4px; }
+.sg-a { color: #D97706; } .sg-b { color: #64748B; } .sg-c { color: #B45309; } .sg-l { color: #E11D48; }
 
-.step-block { display: none; }
-.step-block.active { display: block; animation: fadeIn 0.25s ease; }
+.sl-ck {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 1.5px solid var(--border-strong);
+  display: grid; place-items: center; cursor: pointer;
+  transition: all 140ms var(--ease); flex-shrink: 0;
+}
+.sl-ck svg { width: 12px; height: 12px; opacity: 0; color: #fff; }
+.sl-ck.on { background: var(--brand); border-color: var(--brand); box-shadow: 0 0 10px rgba(0,217,255,0.3); }
+.sl-ck.on svg { opacity: 1; color: #000; }
 
-.step-heading { font-size: 1.15rem; font-weight: 800; margin-bottom: 24px; }
+/* SIDE PANEL */
+.ship-panel {
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 24px; position: sticky; top: 96px;
+}
+.ship-panel h3 {
+  font-size: 0.9rem; font-weight: 700; margin-bottom: 16px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
 
-/* ========== FORM ========== */
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 700px; }
-.form-grid .full { grid-column: 1 / -1; }
-
-.field { margin-bottom: 0; }
-.field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text2); margin-bottom: 8px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
 .field input, .field textarea {
-  width: 100%; padding: 14px 18px;
-  background: var(--bg-input); border: 1px solid var(--border);
+  width: 100%; padding: 10px 14px;
+  background: var(--bg); border: 1px solid var(--border);
   border-radius: var(--r-sm); color: var(--text);
-  font-size: 0.95rem; font-family: inherit;
-  outline: none; transition: border-color 0.2s;
+  font-size: 0.875rem; font-family: var(--font);
+  outline: none; transition: border-color 140ms var(--ease);
 }
-.field input:focus, .field textarea:focus { border-color: var(--cyan); }
+.field input:focus, .field textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(0,217,255,0.1); }
 .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
-.field textarea { resize: none; min-height: 100px; line-height: 1.6; }
+.field textarea { resize: none; min-height: 72px; }
 
-.coupon-row { display: flex; gap: 10px; }
+.coupon-row { display: flex; gap: 8px; }
 .coupon-row input { flex: 1; }
 .coupon-apply {
-  padding: 14px 24px; background: var(--purple); border: none;
-  border-radius: var(--r-sm); color: #fff; font-weight: 700;
-  font-size: 0.9rem; cursor: pointer; font-family: inherit;
+  padding: 10px 16px; background: var(--purple);
+  border: 1px solid var(--purple); border-radius: var(--r-sm);
+  color: #fff; font-weight: 600; font-size: 0.8rem;
+  cursor: pointer; font-family: var(--font); white-space: nowrap;
 }
-.coupon-apply:hover { filter: brightness(1.15); }
+.coupon-apply:hover { filter: brightness(1.2); }
 
 .coupon-ok {
-  margin-top: 10px; padding: 12px 16px;
-  background: rgba(46,204,113,0.06); border: 1px solid rgba(46,204,113,0.18);
-  border-radius: var(--r-sm); font-size: 0.85rem; color: var(--green);
+  margin-top: 8px; padding: 8px 12px;
+  background: var(--success-light); border: 1px solid rgba(16,185,129,0.2);
+  border-radius: var(--r-sm); font-size: 0.8rem; color: var(--success);
   display: none;
 }
 .coupon-ok.show { display: block; }
 
-/* ========== MINI LIST ========== */
-.mini-list {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--r); overflow: hidden; max-width: 700px;
-}
-
-.mini-item {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(40,40,66,0.5);
-}
-.mini-item:last-child { border-bottom: none; }
-
-.mi-thumb {
-  width: 44px; height: 44px; border-radius: 10px;
-  display: grid; place-items: center; flex-shrink: 0;
-}
-.mi-thumb svg { width: 20px; height: 20px; opacity: 0.45; }
-
-.mi-name { flex: 1; font-size: 0.9rem; font-weight: 600; }
-.mi-grade { font-weight: 800; margin-right: 4px; }
-.mg-a { color: var(--gold); } .mg-b { color: #b0b0c0; }
-.mg-c { color: #c07828; } .mg-l { color: var(--pink); }
-
-.mi-check {
-  width: 24px; height: 24px; border-radius: 7px;
-  border: 2px solid var(--border); cursor: pointer;
-  display: grid; place-items: center; transition: all 0.15s;
-  flex-shrink: 0;
-}
-.mi-check svg { opacity: 0; transition: 0.1s; width: 12px; height: 12px; }
-.mi-check.on { background: var(--cyan); border-color: var(--cyan); }
-.mi-check.on svg { opacity: 1; }
-
-/* ========== SUMMARY ========== */
-.summary {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 22px 28px; margin-bottom: 18px;
-  max-width: 700px;
-}
-.summary h3 {
-  font-size: 0.95rem; font-weight: 800;
-  padding-bottom: 14px; margin-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
 
 .s-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 0; font-size: 0.9rem;
+  padding: 5px 0; font-size: 0.85rem;
 }
 .s-row .l { color: var(--text2); }
-.s-row .r { font-weight: 700; }
-.s-row.disc .r { color: var(--green); }
-.s-row.total { border-top: 1px solid var(--border); margin-top: 10px; padding-top: 16px; }
-.s-row.total .r { font-size: 1.2rem; color: var(--gold); }
+.s-row .r { font-weight: 650; }
+.s-row.disc .r { color: var(--success); }
+.s-row.total { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 12px; }
+.s-row.total .r { font-size: 1.1rem; color: var(--brand); font-weight: 700; text-shadow: 0 0 12px rgba(0,217,255,0.3); }
 
-.step-btns { display: flex; gap: 12px; margin-top: 28px; }
+.btn-block { width: 100%; padding: 12px; margin-top: 16px; font-size: 0.9rem; }
 
-/* ========== ORDER GRID ========== */
-.order-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+/* ===== ORDER GRID ===== */
+.order-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
 .order {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 22px 24px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  border-radius: var(--r-md); padding: 22px 24px;
 }
-
-.order-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.order-id { font-size: 0.72rem; color: var(--text3); font-family: 'SF Mono', monospace; }
-.order-date { font-size: 0.85rem; color: var(--text2); margin-bottom: 4px; }
-.order-count { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
+.order-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.order-id { font-size: 0.72rem; color: var(--text3); font-family: var(--mono); }
+.order-date { font-size: 0.82rem; color: var(--text2); margin-bottom: 4px; }
+.order-count { font-size: 0.95rem; font-weight: 650; margin-bottom: 14px; }
 
 .tag {
-  padding: 5px 14px; border-radius: 20px;
-  font-size: 0.72rem; font-weight: 700;
+  padding: 3px 12px; border-radius: 20px;
+  font-size: 0.7rem; font-weight: 600;
 }
-.t-process { background: rgba(241,196,15,0.1); color: var(--yellow); border: 1px solid rgba(241,196,15,0.2); }
-.t-pack { background: rgba(139,108,239,0.1); color: var(--purple); border: 1px solid rgba(139,108,239,0.2); }
-.t-ship { background: rgba(0,212,245,0.1); color: var(--cyan); border: 1px solid rgba(0,212,245,0.2); }
-.t-done { background: rgba(46,204,113,0.1); color: var(--green); border: 1px solid rgba(46,204,113,0.2); }
+.t-process { background: var(--warning-light); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+.t-pack { background: var(--purple-light); color: var(--purple); border: 1px solid rgba(124,58,237,0.2); }
+.t-ship { background: var(--brand-light); color: var(--brand); border: 1px solid rgba(0,217,255,0.2); }
+.t-done { background: var(--success-light); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
 
-.thumbs { display: flex; gap: 10px; margin-bottom: 16px; }
+.thumbs { display: flex; gap: 8px; margin-bottom: 14px; }
 .thumb {
-  width: 52px; height: 52px; border-radius: 10px;
+  width: 44px; height: 44px; border-radius: 8px;
   display: grid; place-items: center; position: relative;
 }
-.thumb svg { width: 22px; height: 22px; opacity: 0.4; }
+.thumb svg { width: 18px; height: 18px; opacity: 0.4; color: #fff; }
 .thumb .tg {
-  position: absolute; bottom: -3px; right: -3px;
-  font-size: 0.5rem; padding: 1px 5px; border-radius: 4px; font-weight: 900;
+  position: absolute; bottom: -2px; right: -2px;
+  font-size: 0.5rem; padding: 1px 4px; border-radius: 3px; font-weight: 800;
 }
 
-.order-foot { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text3); }
-.order-foot a { color: var(--cyan); text-decoration: none; }
+.order-foot { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text3); }
+.order-foot a { color: var(--brand); text-decoration: none; font-weight: 500; }
 .order-foot a:hover { text-decoration: underline; }
 
 .tracking {
-  margin-top: 14px; padding: 14px 18px;
-  background: rgba(0,212,245,0.03); border: 1px solid rgba(0,212,245,0.1);
+  margin-top: 12px; padding: 12px 16px;
+  background: rgba(0,217,255,0.03); border: 1px solid rgba(0,217,255,0.1);
   border-radius: var(--r-sm);
 }
-.tracking .tl { font-size: 0.72rem; color: var(--text3); margin-bottom: 3px; }
-.tracking .tn { font-family: 'SF Mono', monospace; font-size: 0.95rem; font-weight: 700; color: var(--cyan); cursor: pointer; }
+.tracking .tl { font-size: 0.7rem; color: var(--text3); margin-bottom: 2px; }
+.tracking .tn { font-family: var(--mono); font-size: 0.9rem; font-weight: 650; color: var(--brand); cursor: pointer; }
 
-/* ========== ABANDON ========== */
+/* ===== ABANDON ===== */
 .warn-box {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px 22px; border-radius: var(--r);
-  background: rgba(231,76,60,0.05); border: 1px solid rgba(231,76,60,0.18);
-  margin-bottom: 24px; font-size: 0.88rem; color: var(--red);
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; border-radius: var(--r-md);
+  background: var(--danger-light); border: 1px solid rgba(239,68,68,0.2);
+  margin-bottom: 20px; font-size: 0.85rem; color: var(--danger);
 }
 .warn-icon {
-  width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%;
-  background: rgba(231,76,60,0.12); display: grid; place-items: center;
-  font-weight: 900; font-size: 1.1rem;
+  width: 32px; height: 32px; flex-shrink: 0; border-radius: 50%;
+  background: rgba(239,68,68,0.15); display: grid; place-items: center;
+  font-weight: 800; font-size: 0.9rem; color: var(--danger);
 }
 
 .abn-table {
-  width: 100%; background: var(--bg-card);
-  border: 1px solid var(--border); border-radius: var(--r); overflow: hidden;
+  width: 100%; background: var(--bg-elevated);
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  overflow: hidden;
 }
-
-.abn-thead {
-  display: grid; grid-template-columns: 80px 1fr 200px 120px 140px;
-  padding: 14px 20px; font-size: 0.75rem; font-weight: 700;
-  color: var(--text3); border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.015);
+.abn-head {
+  display: grid; grid-template-columns: 80px 1fr 180px 100px 130px;
+  padding: 12px 20px; font-size: 0.72rem; font-weight: 600;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border); background: var(--bg-secondary);
 }
-
 .abn-row {
-  display: grid; grid-template-columns: 80px 1fr 200px 120px 140px;
-  padding: 16px 20px; align-items: center;
-  border-bottom: 1px solid rgba(40,40,66,0.5);
-  opacity: 0.5;
+  display: grid; grid-template-columns: 80px 1fr 180px 100px 130px;
+  padding: 14px 20px; align-items: center;
+  border-bottom: 1px solid var(--border); opacity: 0.55;
 }
 .abn-row:last-child { border-bottom: none; }
-
 .abn-stamp {
-  font-size: 0.7rem; font-weight: 800; color: var(--red);
-  border: 1.5px solid var(--red); padding: 3px 10px;
-  border-radius: 5px; display: inline-block; transform: rotate(1deg);
+  font-size: 0.68rem; font-weight: 700; color: var(--danger);
+  border: 1.5px solid var(--danger); padding: 2px 8px;
+  border-radius: 4px; display: inline-block;
+}
+.abn-cost { text-decoration: line-through; color: var(--text3); font-size: 0.85rem; }
+
+.section-head {
+  font-size: 0.82rem; color: var(--text3); font-weight: 600;
+  padding-bottom: 10px; margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
 }
 
-.abn-cost { text-decoration: line-through; color: var(--text3); font-size: 0.88rem; }
-
-/* ========== MODAL ========== */
+/* ===== MODAL ===== */
 .overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(8px);
-  z-index: 200; display: none;
-  place-items: center;
+  z-index: 200; display: none; place-items: center;
 }
 .overlay.show { display: grid; }
 
 .modal {
-  width: 440px;
-  background: var(--bg-side); border: 1px solid var(--border);
-  border-radius: 20px; padding: 36px 32px;
-  animation: popIn 0.25s ease;
+  width: 420px; background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 32px;
+  box-shadow: var(--shadow-md);
+  animation: modalIn 220ms var(--ease);
 }
-@keyframes popIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
-
-.modal-title { font-size: 1.2rem; font-weight: 900; text-align: center; margin-bottom: 18px; }
-.modal p { text-align: center; font-size: 0.9rem; color: var(--text2); margin-bottom: 6px; }
-.modal .gv { color: var(--gold); font-weight: 800; }
-.modal-btns { display: flex; gap: 12px; margin-top: 24px; }
-.modal-btns .btn { flex: 1; padding: 14px; }
-
-.section-head {
-  font-size: 0.85rem; color: var(--text3); font-weight: 600;
-  padding-bottom: 12px; margin-bottom: 18px;
-  border-bottom: 1px solid var(--border);
-}
-
-/* SVG check icon inline */
+.modal-title { font-size: 1.1rem; font-weight: 700; text-align: center; margin-bottom: 16px; }
+.modal p { text-align: center; font-size: 0.875rem; color: var(--text2); margin-bottom: 4px; }
+.modal .hl { color: var(--brand); font-weight: 700; text-shadow: 0 0 12px rgba(0,217,255,0.3); }
+.modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+.modal-btns .btn { flex: 1; padding: 12px; }
 </style>
 </head>
 <body>
 
-<!-- SVG Symbols -->
+<!-- SVG SYMBOLS -->
 <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg">
   <symbol id="ic-check" viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="currentColor"/></symbol>
-  <symbol id="ic-figure" viewBox="0 0 24 24"><path d="M12 2a4 4 0 014 4v1a4 4 0 01-8 0V6a4 4 0 014-4zm-6 18v-2c0-2.21 3.58-4 6-4s6 1.79 6 4v2H6z" fill="currentColor" opacity="0.7"/></symbol>
-  <symbol id="ic-sword" viewBox="0 0 24 24"><path d="M6.92 5L5 7l5.5 5.5-3.25 3.25 1.42 1.42L12 13.92l3.25 3.25 1.42-1.42L13.42 12.5 19 7l-1.92-2L12 10.08 6.92 5zM4 19h16v2H4v-2z" fill="currentColor" opacity="0.7"/></symbol>
-  <symbol id="ic-anchor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 00-3 3c0 1.3.84 2.4 2 2.82V9H8v2h3v8.92A8.01 8.01 0 014 12H2a10 10 0 0020 0h-2a8.01 8.01 0 01-7 7.92V11h3V9h-3V7.82A3.01 3.01 0 0015 5a3 3 0 00-3-3z" fill="currentColor" opacity="0.7"/></symbol>
-  <symbol id="ic-bolt" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.89 0-.45-.71-.45-.71S11 5 13 2h1l-1 7h3.5c.89 0 .45.71.45.71S13 18 11 21z" fill="currentColor" opacity="0.7"/></symbol>
-  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="currentColor" opacity="0.7"/></symbol>
-  <symbol id="ic-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9l4-6zm3.47 2L7.35 8.5 12 17.5l4.65-9L14.53 5H9.47z" fill="currentColor" opacity="0.7"/></symbol>
-  <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M2 5h4V3h12v2h4v3c0 1.66-1.34 3-3 3h-.09A7.01 7.01 0 0113 16.92V19h3v2H8v-2h3v-2.08A7.01 7.01 0 015.09 11H5a3 3 0 01-3-3V5zm2 2v1a1 1 0 001 1h.26A7.05 7.05 0 015 7.26V7H4zm16 0h-1v.26c-.08.62-.24 1.21-.46 1.76H19a1 1 0 001-1V7z" fill="currentColor" opacity="0.7"/></symbol>
-  <!-- Nav icons -->
-  <symbol id="ic-box" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44a1 1 0 01-.57.18 1 1 0 01-.57-.18l-7.9-4.44A1 1 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44a1 1 0 011.14 0l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L5 8v8l7 3.85L19 16V8l-7-3.85z" fill="currentColor"/></symbol>
-  <symbol id="ic-list" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" fill="currentColor"/></symbol>
-  <symbol id="ic-truck" viewBox="0 0 24 24"><path d="M20 8h-3V4H1v13h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm13.5-8.5l2 2.5H17V10h2.5zM18 18.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/></symbol>
-  <symbol id="ic-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z" fill="currentColor"/></symbol>
-  <symbol id="ic-check-circle" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/></symbol>
-  <symbol id="ic-x-circle" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z" fill="currentColor"/></symbol>
+  <symbol id="ic-figure" viewBox="0 0 24 24"><path d="M12 2a4 4 0 014 4v1a4 4 0 01-8 0V6a4 4 0 014-4zm-6 18v-2c0-2.21 3.58-4 6-4s6 1.79 6 4v2H6z" fill="currentColor"/></symbol>
+  <symbol id="ic-sword" viewBox="0 0 24 24"><path d="M6.92 5L5 7l5.5 5.5-3.25 3.25 1.42 1.42L12 13.92l3.25 3.25 1.42-1.42L13.42 12.5 19 7l-1.92-2L12 10.08z" fill="currentColor"/></symbol>
+  <symbol id="ic-anchor" viewBox="0 0 24 24"><path d="M12 2a3 3 0 00-3 3c0 1.3.84 2.4 2 2.82V9H8v2h3v8.92A8 8 0 014 12H2a10 10 0 0020 0h-2a8 8 0 01-7 7.92V11h3V9h-3V7.82A3 3 0 0015 5a3 3 0 00-3-3z" fill="currentColor"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.89 0-.45-.71-.45-.71S11 5 13 2h1l-1 7h3.5c.89 0 .45.71.45.71S13 18 11 21z" fill="currentColor"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z" fill="currentColor"/></symbol>
+  <symbol id="ic-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 12L2 9z" fill="currentColor"/></symbol>
+  <symbol id="ic-trophy" viewBox="0 0 24 24"><path d="M2 5h4V3h12v2h4v3a3 3 0 01-3 3h-.09A7 7 0 0113 16.92V19h3v2H8v-2h3v-2.08A7 7 0 015.09 11H5a3 3 0 01-3-3z" fill="currentColor"/></symbol>
+  <symbol id="ic-box" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44a1 1 0 01-1.14 0l-7.9-4.44A1 1 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44a1 1 0 011.14 0l7.9 4.44c.32.17.53.5.53.88zM12 4.15L5 8v8l7 3.85L19 16V8z" fill="currentColor"/></symbol>
+  <symbol id="ic-list" viewBox="0 0 24 24"><path d="M3 13h2v-2H3zm0 4h2v-2H3zm0-8h2V7H3zm4 4h14v-2H7zm0 4h14v-2H7zM7 7v2h14V7z" fill="currentColor"/></symbol>
+  <symbol id="ic-truck" viewBox="0 0 24 24"><path d="M20 8h-3V4H1v13h2a3 3 0 006 0h6a3 3 0 006 0h2v-5zM6 18.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm13.5-8.5l2 2.5H17V10zM18 18.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="currentColor"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="currentColor"/></symbol>
+  <symbol id="ic-check-c" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8z" fill="currentColor"/></symbol>
+  <symbol id="ic-x-c" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12z" fill="currentColor"/></symbol>
+  <symbol id="ic-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><text x="12" y="16" text-anchor="middle" font-size="10" font-weight="900" fill="#fff">G</text></symbol>
 </svg>
 
 <!-- TOP NAV -->
 <nav class="topnav">
   <div class="topnav-left">
-    <div class="logo">GACHA+</div>
+    <div class="logo">GACHA<span>+</span></div>
     <div class="breadcrumb">
       <span class="parent">會員中心</span>
       <span class="sep">/</span>
-      <span class="current" id="bc-text">獎品暫存區</span>
+      <span class="current" id="bc">獎品暫存區</span>
     </div>
   </div>
   <div class="topnav-right">
-    <div class="coin-pill"><div class="coin-dot">G</div><span class="coin-val">4,280</span></div>
+    <div class="coin-pill">
+      <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/></svg>
+      <span>4,280</span>
+    </div>
     <div class="avatar">W</div>
   </div>
 </nav>
 
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="side-label">購物車管理</div>
-    <div class="side-item active" data-p="cart">
-      <svg><use href="#ic-box"/></svg>
-      <span>獎品暫存區</span>
-      <span class="side-badge">7</span>
-    </div>
-    <div class="side-item" data-p="detail">
-      <svg><use href="#ic-list"/></svg>
-      <span>購物明細</span>
-    </div>
-    <div class="side-item" data-p="ship">
-      <svg><use href="#ic-truck"/></svg>
-      <span>申請出貨</span>
-    </div>
-
-    <div class="side-label">出貨紀錄</div>
-    <div class="side-item" data-p="pending">
-      <svg><use href="#ic-clock"/></svg>
-      <span>待出貨</span>
-      <span class="side-badge">2</span>
-    </div>
-    <div class="side-item" data-p="shipped">
-      <svg><use href="#ic-check-circle"/></svg>
-      <span>已出貨</span>
-    </div>
-    <div class="side-item" data-p="abandon">
-      <svg><use href="#ic-x-circle"/></svg>
-      <span>放棄紀錄</span>
-    </div>
+    <div class="side-group">購物車管理</div>
+    <div class="side-item active" data-p="cart"><svg><use href="#ic-box"/></svg><span>獎品暫存區</span><span class="side-badge">7</span></div>
+    <div class="side-item" data-p="detail"><svg><use href="#ic-list"/></svg><span>購物明細</span></div>
+    <div class="side-item" data-p="ship"><svg><use href="#ic-truck"/></svg><span>申請出貨</span></div>
+    <div class="side-group">出貨紀錄</div>
+    <div class="side-item" data-p="pending"><svg><use href="#ic-clock"/></svg><span>待出貨</span><span class="side-badge">2</span></div>
+    <div class="side-item" data-p="shipped"><svg><use href="#ic-check-c"/></svg><span>已出貨</span></div>
+    <div class="side-item" data-p="abandon"><svg><use href="#ic-x-c"/></svg><span>放棄紀錄</span></div>
   </aside>
 
-  <!-- MAIN -->
   <div class="main">
 
-    <!-- ===== PAGE: CART ===== -->
+    <!-- PAGE: CART -->
     <div class="page active" id="p-cart">
-      <div class="page-title">獎品暫存區</div>
-      <div class="page-desc">已抽中的獎品會暫存在這裡，請在 10 天內申請出貨或系統將自動寄出。</div>
-
-      <div class="info-row">
-        <div class="info-card">
-          <div class="info-icon purple"><svg><use href="#ic-box"/></svg></div>
-          <div><div class="label">暫存容量</div><div class="val val-cyan">7 / 20 件</div></div>
-        </div>
-        <div class="info-card">
-          <div class="info-icon gold"><svg><use href="#ic-star"/></svg></div>
-          <div><div class="label">目前累計</div><div class="val val-gold">2,450 代幣</div></div>
-        </div>
-        <div class="info-card">
-          <div class="info-icon cyan"><svg><use href="#ic-clock"/></svg></div>
-          <div><div class="label">最早自動出貨</div><div class="val">3 天後</div></div>
-        </div>
+      <div class="page-header">
+        <div class="page-title">獎品暫存區</div>
+        <div class="page-desc">已抽中的獎品暫存在此，10 天內未申請出貨將自動寄出</div>
       </div>
-
+      <div class="stats">
+        <div class="stat"><div class="label">暫存容量</div><div class="value blue">7 / 20 件</div></div>
+        <div class="stat"><div class="label">目前累計</div><div class="value amber">2,450 代幣</div></div>
+        <div class="stat"><div class="label">最早自動出貨</div><div class="value">3 天後</div></div>
+      </div>
       <div class="toolbar">
-        <div class="toolbar-left">
-          <button class="tb-btn" onclick="toggleAll()">全選 / 取消全選</button>
-        </div>
+        <div class="toolbar-left"><button class="tb-btn" onclick="toggleAll()">全選 / 取消全選</button></div>
         <button class="tb-sort">依抽取時間排序 &#x25BE;</button>
       </div>
-
-      <div class="prize-table">
-        <div class="prize-thead">
-          <div></div><div>圖片</div><div>獎品名稱</div><div>來源一番賞</div><div>花費</div><div>抽取時間</div>
-        </div>
-        <div class="prize-row on" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i1"><svg><use href="#ic-figure"/></svg><span class="p-grade ga">A賞</span></div>
-          <div class="p-info"><div class="p-name">超級賽亞人孫悟空 極意功 Figure</div><div class="p-from">約 25cm 模型</div></div>
-          <div class="p-source">七龍珠超 ~最強戰士篇~</div>
-          <div class="p-cost"><span class="mc">G</span>680</div>
-          <div class="p-time">03/22 14:32</div>
-        </div>
-        <div class="prize-row" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i3"><svg><use href="#ic-sword"/></svg><span class="p-grade ga">A賞</span></div>
-          <div class="p-info"><div class="p-name">炭治郎 水之呼吸 景品模型</div><div class="p-from">約 20cm 模型</div></div>
-          <div class="p-source">鬼滅之刃 ~無限列車篇~</div>
-          <div class="p-cost"><span class="mc">G</span>550</div>
-          <div class="p-time">03/22 14:28</div>
-        </div>
-        <div class="prize-row" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i4"><svg><use href="#ic-anchor"/></svg><span class="p-grade gb">B賞</span></div>
-          <div class="p-info"><div class="p-name">魯夫 五檔 尼卡造型 Figure</div><div class="p-from">約 18cm 模型</div></div>
-          <div class="p-source">ONE PIECE ~新世界篇~</div>
-          <div class="p-cost"><span class="mc">G</span>350</div>
-          <div class="p-time">03/21 20:15</div>
-        </div>
-        <div class="prize-row" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i2"><svg><use href="#ic-bolt"/></svg><span class="p-grade gb">B賞</span></div>
-          <div class="p-info"><div class="p-name">五條悟 無量空處 壓克力立牌</div><div class="p-from">A4 尺寸</div></div>
-          <div class="p-source">咒術迴戰 ~澀谷事變~</div>
-          <div class="p-cost"><span class="mc">G</span>320</div>
-          <div class="p-time">03/21 19:44</div>
-        </div>
-        <div class="prize-row" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i5"><svg><use href="#ic-star"/></svg><span class="p-grade gc">C賞</span></div>
-          <div class="p-info"><div class="p-name">佐助 須佐能乎 迷你吊飾</div><div class="p-from">約 5cm</div></div>
-          <div class="p-source">火影忍者 ~忍界大戰~</div>
-          <div class="p-cost"><span class="mc">G</span>200</div>
-          <div class="p-time">03/20 10:02</div>
-        </div>
-        <div class="prize-row" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i6"><svg><use href="#ic-gem"/></svg><span class="p-grade gc">C賞</span></div>
-          <div class="p-info"><div class="p-name">皮卡丘 毛絨公仔 15cm</div><div class="p-from">玩偶</div></div>
-          <div class="p-source">寶可夢 ~旅途的夥伴~</div>
-          <div class="p-cost"><span class="mc">G</span>180</div>
-          <div class="p-time">03/20 09:58</div>
-        </div>
-        <div class="prize-row" onclick="togRow(this)">
-          <div class="p-check"><svg><use href="#ic-check"/></svg></div>
-          <div class="p-img i7"><svg><use href="#ic-trophy"/></svg><span class="p-grade gl">LAST</span></div>
-          <div class="p-info"><div class="p-name">最後賞 限定配色 孫悟空 SP Figure</div><div class="p-from">約 30cm 限定版</div></div>
-          <div class="p-source">七龍珠超 ~最強戰士篇~</div>
-          <div class="p-cost"><span class="mc">G</span>170</div>
-          <div class="p-time">03/22 14:33</div>
-        </div>
+      <div class="table">
+        <div class="t-head"><div></div><div>圖片</div><div>獎品名稱</div><div>來源一番賞</div><div>花費</div><div>抽取時間</div></div>
+        <div class="t-row on" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i1"><svg><use href="#ic-figure"/></svg><span class="grade ga">A賞</span></div><div><div class="t-name">超級賽亞人孫悟空 極意功 Figure</div><div class="t-sub">約 25cm 模型</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div class="t-cost">680 G</div><div class="t-time">03/22 14:32</div></div>
+        <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i3"><svg><use href="#ic-sword"/></svg><span class="grade ga">A賞</span></div><div><div class="t-name">炭治郎 水之呼吸 景品模型</div><div class="t-sub">約 20cm 模型</div></div><div class="t-source">鬼滅之刃 ~無限列車篇~</div><div class="t-cost">550 G</div><div class="t-time">03/22 14:28</div></div>
+        <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i4"><svg><use href="#ic-anchor"/></svg><span class="grade gb">B賞</span></div><div><div class="t-name">魯夫 五檔 尼卡造型 Figure</div><div class="t-sub">約 18cm 模型</div></div><div class="t-source">ONE PIECE ~新世界篇~</div><div class="t-cost">350 G</div><div class="t-time">03/21 20:15</div></div>
+        <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i2"><svg><use href="#ic-bolt"/></svg><span class="grade gb">B賞</span></div><div><div class="t-name">五條悟 無量空處 壓克力立牌</div><div class="t-sub">A4 尺寸</div></div><div class="t-source">咒術迴戰 ~澀谷事變~</div><div class="t-cost">320 G</div><div class="t-time">03/21 19:44</div></div>
+        <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i5"><svg><use href="#ic-star"/></svg><span class="grade gc">C賞</span></div><div><div class="t-name">佐助 須佐能乎 迷你吊飾</div><div class="t-sub">約 5cm</div></div><div class="t-source">火影忍者 ~忍界大戰~</div><div class="t-cost">200 G</div><div class="t-time">03/20 10:02</div></div>
+        <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i6"><svg><use href="#ic-gem"/></svg><span class="grade gc">C賞</span></div><div><div class="t-name">皮卡丘 毛絨公仔 15cm</div><div class="t-sub">玩偶</div></div><div class="t-source">寶可夢 ~旅途的夥伴~</div><div class="t-cost">180 G</div><div class="t-time">03/20 09:58</div></div>
+        <div class="t-row" onclick="togR(this)"><div class="ck"><svg><use href="#ic-check"/></svg></div><div class="t-img i7"><svg><use href="#ic-trophy"/></svg><span class="grade gl">LAST</span></div><div><div class="t-name">最後賞 限定配色 孫悟空 SP Figure</div><div class="t-sub">約 30cm 限定版</div></div><div class="t-source">七龍珠超 ~最強戰士篇~</div><div class="t-cost">170 G</div><div class="t-time">03/22 14:33</div></div>
       </div>
-
-      <div class="action-row">
-        <button class="btn btn-red" onclick="showOv('modal-abandon')">放棄已選商品</button>
-        <button class="btn btn-gold" onclick="go('ship')">申請出貨</button>
+      <div class="actions">
+        <button class="btn btn-danger" onclick="showOv('m-abandon')">放棄已選商品</button>
+        <button class="btn btn-primary" onclick="go('ship')">申請出貨</button>
       </div>
     </div>
 
-    <!-- ===== PAGE: DETAIL ===== -->
+    <!-- PAGE: DETAIL -->
     <div class="page" id="p-detail">
-      <div class="page-title">購物明細</div>
-      <div class="page-desc">查看獎品詳細資訊</div>
-
+      <div class="page-header"><div class="page-title">購物明細</div><div class="page-desc">獎品詳細資訊</div></div>
       <div class="detail-layout">
-        <div class="detail-hero i1">
-          <svg><use href="#ic-figure"/></svg>
-          <span class="p-grade ga">A賞</span>
-        </div>
-        <div class="detail-right">
+        <div class="detail-img i1"><svg><use href="#ic-figure"/></svg><span class="grade ga">A賞</span></div>
+        <div>
           <div class="detail-name">超級賽亞人孫悟空 極意功 Figure</div>
           <div class="detail-source">七龍珠超 一番賞 ~最強戰士篇~</div>
-
-          <div class="detail-fields">
-            <div class="d-cell"><div class="lbl">賞別</div><div class="val val-gold">A賞</div></div>
+          <div class="detail-grid">
+            <div class="d-cell"><div class="lbl">賞別</div><div class="val val-amber">A賞</div></div>
             <div class="d-cell"><div class="lbl">抽取編號</div><div class="val">#0847</div></div>
             <div class="d-cell"><div class="lbl">抽取時間</div><div class="val">2026/03/22 14:32</div></div>
-            <div class="d-cell"><div class="lbl">花費代幣</div><div class="val val-gold">680 G</div></div>
+            <div class="d-cell"><div class="lbl">花費代幣</div><div class="val val-amber">680 G</div></div>
             <div class="d-cell"><div class="lbl">來源廠商</div><div class="val">享玩拉麵</div></div>
-            <div class="d-cell"><div class="lbl">暫存狀態</div><div class="val val-cyan">暫存中</div></div>
+            <div class="d-cell"><div class="lbl">暫存狀態</div><div class="val val-blue">暫存中</div></div>
           </div>
-
-          <div class="timer-bar">
-            <svg><use href="#ic-clock"/></svg>
-            <span>此獎品將於 <strong>2026/04/01</strong> 自動出貨</span>
-          </div>
-
-          <div style="display:flex;gap:12px;">
-            <button class="btn btn-red">放棄此獎品</button>
-            <button class="btn btn-gold" onclick="go('ship')">申請出貨</button>
+          <div class="notice info"><svg><use href="#ic-clock"/></svg><span>此獎品將於 <strong>2026/04/01</strong> 自動出貨</span></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-danger">放棄此獎品</button>
+            <button class="btn btn-primary" onclick="go('ship')">申請出貨</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ===== PAGE: SHIP ===== -->
+    <!-- PAGE: SHIP (simplified - one page like OneOne) -->
     <div class="page" id="p-ship">
-      <div class="page-title">申請出貨</div>
-      <div class="page-desc">選擇獎品、填寫地址、確認出貨</div>
-
-      <div class="stepper">
-        <div class="s-step"><div class="s-dot now" id="sd1">1</div><span class="s-label now" id="sl1t">選擇獎品</span></div>
-        <div class="s-line" id="sl1"></div>
-        <div class="s-step"><div class="s-dot" id="sd2">2</div><span class="s-label" id="sl2t">收件資訊</span></div>
-        <div class="s-line" id="sl2"></div>
-        <div class="s-step"><div class="s-dot" id="sd3">3</div><span class="s-label" id="sl3t">活動碼</span></div>
-        <div class="s-line" id="sl3"></div>
-        <div class="s-step"><div class="s-dot" id="sd4">4</div><span class="s-label" id="sl4t">確認</span></div>
-      </div>
-
-      <!-- Step 1 -->
-      <div class="step-block active" id="sb1">
-        <div class="step-heading">選擇要出貨的獎品</div>
-        <div class="mini-list">
-          <div class="mini-item"><div class="mi-thumb i1"><svg><use href="#ic-figure"/></svg></div><div class="mi-name"><span class="mi-grade mg-a">A賞</span>孫悟空 極意功 Figure</div><div class="mi-check on" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
-          <div class="mini-item"><div class="mi-thumb i3"><svg><use href="#ic-sword"/></svg></div><div class="mi-name"><span class="mi-grade mg-a">A賞</span>炭治郎 水之呼吸 模型</div><div class="mi-check on" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
-          <div class="mini-item"><div class="mi-thumb i4"><svg><use href="#ic-anchor"/></svg></div><div class="mi-name"><span class="mi-grade mg-b">B賞</span>魯夫 五檔 Figure</div><div class="mi-check" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
-          <div class="mini-item"><div class="mi-thumb i2"><svg><use href="#ic-bolt"/></svg></div><div class="mi-name"><span class="mi-grade mg-b">B賞</span>五條悟 壓克力立牌</div><div class="mi-check" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
-          <div class="mini-item"><div class="mi-thumb i5"><svg><use href="#ic-star"/></svg></div><div class="mi-name"><span class="mi-grade mg-c">C賞</span>佐助 迷你吊飾</div><div class="mi-check" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
-          <div class="mini-item"><div class="mi-thumb i6"><svg><use href="#ic-gem"/></svg></div><div class="mi-name"><span class="mi-grade mg-c">C賞</span>皮卡丘 毛絨公仔</div><div class="mi-check" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
-          <div class="mini-item"><div class="mi-thumb i7"><svg><use href="#ic-trophy"/></svg></div><div class="mi-name"><span class="mi-grade mg-l">LAST</span>限定配色 孫悟空</div><div class="mi-check" onclick="this.classList.toggle('on')"><svg width="12" height="12"><use href="#ic-check"/></svg></div></div>
+      <div class="page-header"><div class="page-title">申請出貨</div><div class="page-desc">勾選獎品、確認地址，一鍵出貨</div></div>
+      <div class="ship-layout">
+        <div>
+          <div class="section-head">勾選要出貨的獎品</div>
+          <div class="ship-list">
+            <div class="sl-item"><div class="sl-thumb i1"><svg><use href="#ic-figure"/></svg></div><div class="sl-name"><span class="sl-grade sg-a">A賞</span>孫悟空 極意功 Figure</div><div class="sl-ck on" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+            <div class="sl-item"><div class="sl-thumb i3"><svg><use href="#ic-sword"/></svg></div><div class="sl-name"><span class="sl-grade sg-a">A賞</span>炭治郎 水之呼吸 模型</div><div class="sl-ck on" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+            <div class="sl-item"><div class="sl-thumb i4"><svg><use href="#ic-anchor"/></svg></div><div class="sl-name"><span class="sl-grade sg-b">B賞</span>魯夫 五檔 Figure</div><div class="sl-ck" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+            <div class="sl-item"><div class="sl-thumb i2"><svg><use href="#ic-bolt"/></svg></div><div class="sl-name"><span class="sl-grade sg-b">B賞</span>五條悟 壓克力立牌</div><div class="sl-ck" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+            <div class="sl-item"><div class="sl-thumb i5"><svg><use href="#ic-star"/></svg></div><div class="sl-name"><span class="sl-grade sg-c">C賞</span>佐助 迷你吊飾</div><div class="sl-ck" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+            <div class="sl-item"><div class="sl-thumb i6"><svg><use href="#ic-gem"/></svg></div><div class="sl-name"><span class="sl-grade sg-c">C賞</span>皮卡丘 毛絨公仔</div><div class="sl-ck" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+            <div class="sl-item"><div class="sl-thumb i7"><svg><use href="#ic-trophy"/></svg></div><div class="sl-name"><span class="sl-grade sg-l">LAST</span>限定配色 孫悟空</div><div class="sl-ck" onclick="this.classList.toggle('on')"><svg><use href="#ic-check"/></svg></div></div>
+          </div>
         </div>
-        <div class="step-btns">
-          <button class="btn btn-ghost" onclick="go('cart')">返回暫存區</button>
-          <button class="btn btn-gold" onclick="toStep(2)">下一步：填寫地址</button>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="step-block" id="sb2">
-        <div class="step-heading">填寫收件資訊</div>
-        <div class="form-grid">
-          <div class="field"><label>收件人姓名</label><input value="王小明" placeholder="請輸入真實姓名"></div>
-          <div class="field"><label>聯絡電話</label><input value="0912-345-678" placeholder="09xx-xxx-xxx"></div>
-          <div class="field full"><label>收件地址</label><textarea placeholder="請輸入完整地址（含郵遞區號）">106 台北市大安區忠孝東路三段 123 號 5 樓</textarea></div>
-          <div class="field full"><label>備註（選填）</label><input placeholder="例：請放管理室、電聯後再送"></div>
-        </div>
-        <div class="step-btns">
-          <button class="btn btn-ghost" onclick="toStep(1)">上一步</button>
-          <button class="btn btn-gold" onclick="toStep(3)">下一步：活動碼</button>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="step-block" id="sb3">
-        <div class="step-heading">行銷活動碼</div>
-        <div style="max-width:700px;">
+        <div class="ship-panel">
+          <h3>收件資訊</h3>
+          <div class="field"><label>收件人</label><input value="王小明"></div>
+          <div class="field"><label>電話</label><input value="0912-345-678"></div>
+          <div class="field"><label>地址</label><textarea>106 台北市大安區忠孝東路三段 123 號 5 樓</textarea></div>
+          <div class="divider"></div>
+          <h3>折扣碼</h3>
           <div class="field">
-            <label>輸入折扣碼（選填）</label>
-            <div class="coupon-row"><input value="SPRING50" placeholder="例：FREESHIP2026"><button class="coupon-apply" onclick="applyCp()">套用</button></div>
-            <div class="coupon-ok" id="cp-ok">已套用「春季免運」折扣，運費折抵 50 代幣</div>
+            <div class="coupon-row"><input value="SPRING50" placeholder="輸入折扣碼"><button class="coupon-apply" onclick="applyCp()">套用</button></div>
+            <div class="coupon-ok" id="cp-ok">已套用「春季免運」，折抵 50 代幣</div>
           </div>
-          <div class="summary" style="margin-top:24px;">
-            <h3>出貨摘要</h3>
-            <div class="s-row"><span class="l">出貨獎品</span><span class="r">2 件</span></div>
-            <div class="s-row"><span class="l">運費</span><span class="r">100 代幣</span></div>
-            <div class="s-row disc" id="disc-row" style="display:none;"><span class="l">折扣碼折抵</span><span class="r">-50 代幣</span></div>
-            <div class="s-row total"><span class="l">應付運費</span><span class="r" id="total-val">100 代幣</span></div>
-          </div>
-        </div>
-        <div class="step-btns">
-          <button class="btn btn-ghost" onclick="toStep(2)">上一步</button>
-          <button class="btn btn-gold" onclick="toStep(4)">下一步：確認</button>
-        </div>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="step-block" id="sb4">
-        <div class="step-heading">確認出貨內容</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:700px;">
-          <div class="summary" style="margin-bottom:0;">
-            <h3>出貨獎品</h3>
-            <div class="mini-item" style="border:none;padding:10px 0;"><div class="mi-thumb i1"><svg><use href="#ic-figure"/></svg></div><div class="mi-name"><span class="mi-grade mg-a">A賞</span>孫悟空</div></div>
-            <div class="mini-item" style="border:none;padding:10px 0;"><div class="mi-thumb i3"><svg><use href="#ic-sword"/></svg></div><div class="mi-name"><span class="mi-grade mg-a">A賞</span>炭治郎</div></div>
-          </div>
-          <div class="summary" style="margin-bottom:0;">
-            <h3>收件資訊</h3>
-            <div class="s-row"><span class="l">收件人</span><span class="r">王小明</span></div>
-            <div class="s-row"><span class="l">電話</span><span class="r">0912-345-678</span></div>
-            <div class="s-row"><span class="l">地址</span><span class="r" style="font-size:0.82rem;text-align:right;max-width:60%;">106 台北市大安區忠孝東路三段 123 號 5 樓</span></div>
-          </div>
-        </div>
-        <div class="summary" style="max-width:700px;margin-top:18px;">
-          <h3>費用明細</h3>
+          <div class="divider"></div>
+          <div class="s-row"><span class="l">已選獎品</span><span class="r">2 件</span></div>
           <div class="s-row"><span class="l">運費</span><span class="r">100 代幣</span></div>
-          <div class="s-row disc"><span class="l">折扣碼折抵</span><span class="r">-50 代幣</span></div>
-          <div class="s-row total"><span class="l">應付運費</span><span class="r">50 代幣</span></div>
-        </div>
-        <div class="step-btns">
-          <button class="btn btn-ghost" onclick="toStep(3)">上一步</button>
-          <button class="btn btn-gold" onclick="showOv('modal-confirm')">確認出貨</button>
+          <div class="s-row disc" id="disc" style="display:none;"><span class="l">折扣</span><span class="r">-50 代幣</span></div>
+          <div class="s-row total"><span class="l">應付運費</span><span class="r" id="tv">100 代幣</span></div>
+          <button class="btn btn-primary btn-block" onclick="showOv('m-confirm')">確認出貨</button>
         </div>
       </div>
     </div>
 
-    <!-- ===== PAGE: PENDING ===== -->
+    <!-- PAGE: PENDING -->
     <div class="page" id="p-pending">
-      <div class="page-title">待出貨訂單</div>
-      <div class="page-desc">已申請出貨、尚未寄出的訂單</div>
-
+      <div class="page-header"><div class="page-title">待出貨訂單</div><div class="page-desc">已申請出貨、尚未寄出的訂單</div></div>
       <div class="order-grid">
         <div class="order">
-          <div class="order-top"><div><div class="order-id">#ORD-20260322-0847</div><div class="order-date">申請日期：2026/03/22</div></div><span class="tag t-pack">包裝中</span></div>
+          <div class="order-top"><div><div class="order-id">#ORD-20260322-0847</div><div class="order-date">申請：2026/03/22</div></div><span class="tag t-pack">包裝中</span></div>
           <div class="order-count">共 3 件獎品</div>
-          <div class="thumbs">
-            <div class="thumb i1"><svg><use href="#ic-figure"/></svg><span class="tg ga">A</span></div>
-            <div class="thumb i3"><svg><use href="#ic-sword"/></svg><span class="tg ga">A</span></div>
-            <div class="thumb i5"><svg><use href="#ic-star"/></svg><span class="tg gc">C</span></div>
-          </div>
-          <div class="order-foot"><span>運費：50 代幣（已折抵）</span><span>預計 3/25~3/29 到貨</span></div>
+          <div class="thumbs"><div class="thumb i1"><svg><use href="#ic-figure"/></svg><span class="tg ga">A</span></div><div class="thumb i3"><svg><use href="#ic-sword"/></svg><span class="tg ga">A</span></div><div class="thumb i5"><svg><use href="#ic-star"/></svg><span class="tg gc">C</span></div></div>
+          <div class="order-foot"><span>運費：50 代幣</span><span>預計 3/25~3/29</span></div>
         </div>
         <div class="order">
-          <div class="order-top"><div><div class="order-id">#ORD-20260320-0632</div><div class="order-date">申請日期：2026/03/20</div></div><span class="tag t-process">處理中</span></div>
+          <div class="order-top"><div><div class="order-id">#ORD-20260320-0632</div><div class="order-date">申請：2026/03/20</div></div><span class="tag t-process">處理中</span></div>
           <div class="order-count">共 2 件獎品</div>
-          <div class="thumbs">
-            <div class="thumb i4"><svg><use href="#ic-anchor"/></svg><span class="tg gb">B</span></div>
-            <div class="thumb i6"><svg><use href="#ic-gem"/></svg><span class="tg gc">C</span></div>
-          </div>
-          <div class="order-foot"><span>運費：100 代幣</span><span>預計 3/27~3/31 到貨</span></div>
+          <div class="thumbs"><div class="thumb i4"><svg><use href="#ic-anchor"/></svg><span class="tg gb">B</span></div><div class="thumb i6"><svg><use href="#ic-gem"/></svg><span class="tg gc">C</span></div></div>
+          <div class="order-foot"><span>運費：100 代幣</span><span>預計 3/27~3/31</span></div>
         </div>
       </div>
     </div>
 
-    <!-- ===== PAGE: SHIPPED ===== -->
+    <!-- PAGE: SHIPPED -->
     <div class="page" id="p-shipped">
-      <div class="page-title">已出貨訂單</div>
-      <div class="page-desc">已寄出的訂單及物流追蹤</div>
-
+      <div class="page-header"><div class="page-title">已出貨訂單</div><div class="page-desc">已寄出的訂單及物流追蹤</div></div>
       <div class="order-grid">
         <div class="order">
           <div class="order-top"><div><div class="order-id">#ORD-20260315-0421</div><div class="order-date">寄出：2026/03/16</div></div><span class="tag t-done">已送達</span></div>
           <div class="order-count">共 4 件獎品</div>
-          <div class="thumbs">
-            <div class="thumb i2"><svg><use href="#ic-bolt"/></svg><span class="tg ga">A</span></div>
-            <div class="thumb i1"><svg><use href="#ic-figure"/></svg><span class="tg gb">B</span></div>
-            <div class="thumb i5"><svg><use href="#ic-star"/></svg><span class="tg gc">C</span></div>
-            <div class="thumb i6"><svg><use href="#ic-gem"/></svg><span class="tg gd">D</span></div>
-          </div>
+          <div class="thumbs"><div class="thumb i2"><svg><use href="#ic-bolt"/></svg><span class="tg ga">A</span></div><div class="thumb i1"><svg><use href="#ic-figure"/></svg><span class="tg gb">B</span></div><div class="thumb i5"><svg><use href="#ic-star"/></svg><span class="tg gc">C</span></div><div class="thumb i6"><svg><use href="#ic-gem"/></svg><span class="tg gd">D</span></div></div>
           <div class="tracking"><div class="tl">物流單號（黑貓宅急便）</div><div class="tn">7230-4851-9027</div></div>
-          <div class="order-foot" style="margin-top:14px;"><span>送達：2026/03/19</span><a href="#">查看詳情</a></div>
+          <div class="order-foot" style="margin-top:12px;"><span>送達：2026/03/19</span><a href="#">查看詳情</a></div>
         </div>
         <div class="order">
           <div class="order-top"><div><div class="order-id">#ORD-20260310-0198</div><div class="order-date">寄出：2026/03/11</div></div><span class="tag t-ship">運送中</span></div>
           <div class="order-count">共 1 件獎品</div>
-          <div class="thumbs">
-            <div class="thumb i7"><svg><use href="#ic-trophy"/></svg><span class="tg gl">L</span></div>
-          </div>
+          <div class="thumbs"><div class="thumb i7"><svg><use href="#ic-trophy"/></svg><span class="tg gl">L</span></div></div>
           <div class="tracking"><div class="tl">物流單號（黑貓宅急便）</div><div class="tn">7230-5522-1038</div></div>
-          <div class="order-foot" style="margin-top:14px;"><span>預計 3/24~3/26 到貨</span><a href="#">查看詳情</a></div>
+          <div class="order-foot" style="margin-top:12px;"><span>預計 3/24~3/26</span><a href="#">查看詳情</a></div>
         </div>
       </div>
     </div>
 
-    <!-- ===== PAGE: ABANDON ===== -->
+    <!-- PAGE: ABANDON -->
     <div class="page" id="p-abandon">
-      <div class="page-title">放棄紀錄</div>
-      <div class="page-desc">已放棄的獎品清單</div>
-
-      <div class="warn-box">
-        <div class="warn-icon">!</div>
-        <div>已放棄的獎品無法恢復，代幣不予退還。請謹慎操作。</div>
-      </div>
-
+      <div class="page-header"><div class="page-title">放棄紀錄</div><div class="page-desc">已放棄的獎品清單</div></div>
+      <div class="warn-box"><div class="warn-icon">!</div><div>已放棄的獎品無法恢復，代幣不予退還。</div></div>
       <div class="abn-table">
-        <div class="abn-thead"><div>狀態</div><div>獎品名稱</div><div>來源一番賞</div><div>原花費</div><div>放棄時間</div></div>
-        <div class="abn-row">
-          <div><span class="abn-stamp">已放棄</span></div>
-          <div class="p-info"><div class="p-name">鳴人 螺旋丸 橡皮擦</div><div class="p-from">C賞</div></div>
-          <div class="p-source">火影忍者 ~忍界大戰~</div>
-          <div class="abn-cost">200 G</div>
-          <div class="p-time">03/18 11:20</div>
-        </div>
-        <div class="abn-row">
-          <div><span class="abn-stamp">已放棄</span></div>
-          <div class="p-info"><div class="p-name">傑尼龜 迷你磁鐵</div><div class="p-from">D賞</div></div>
-          <div class="p-source">寶可夢 ~旅途的夥伴~</div>
-          <div class="abn-cost">120 G</div>
-          <div class="p-time">03/15 08:45</div>
-        </div>
-        <div class="abn-row">
-          <div><span class="abn-stamp">已放棄</span></div>
-          <div class="p-info"><div class="p-name">虎杖悠仁 透明資料夾</div><div class="p-from">C賞</div></div>
-          <div class="p-source">咒術迴戰 ~澀谷事變~</div>
-          <div class="abn-cost">150 G</div>
-          <div class="p-time">03/10 16:33</div>
-        </div>
+        <div class="abn-head"><div>狀態</div><div>獎品名稱</div><div>來源一番賞</div><div>原花費</div><div>放棄時間</div></div>
+        <div class="abn-row"><div><span class="abn-stamp">已放棄</span></div><div><div class="t-name">鳴人 螺旋丸 橡皮擦</div><div class="t-sub">C賞</div></div><div class="t-source">火影忍者 ~忍界大戰~</div><div class="abn-cost">200 G</div><div class="t-time">03/18 11:20</div></div>
+        <div class="abn-row"><div><span class="abn-stamp">已放棄</span></div><div><div class="t-name">傑尼龜 迷你磁鐵</div><div class="t-sub">D賞</div></div><div class="t-source">寶可夢 ~旅途的夥伴~</div><div class="abn-cost">120 G</div><div class="t-time">03/15 08:45</div></div>
+        <div class="abn-row"><div><span class="abn-stamp">已放棄</span></div><div><div class="t-name">虎杖悠仁 透明資料夾</div><div class="t-sub">C賞</div></div><div class="t-source">咒術迴戰 ~澀谷事變~</div><div class="abn-cost">150 G</div><div class="t-time">03/10 16:33</div></div>
       </div>
     </div>
 
-  </div><!-- /main -->
-</div><!-- /layout -->
-
-<!-- MODALS -->
-<div class="overlay" id="modal-confirm">
-  <div class="modal">
-    <div class="modal-title">確認出貨</div>
-    <p>即將為您寄出 <strong>2 件</strong> 獎品</p>
-    <p>將扣除運費 <span class="gv">50 代幣</span></p>
-    <div class="modal-btns">
-      <button class="btn btn-ghost" onclick="hideOv('modal-confirm')">取消</button>
-      <button class="btn btn-gold" onclick="hideOv('modal-confirm');go('pending')">確認送出</button>
-    </div>
   </div>
 </div>
 
-<div class="overlay" id="modal-abandon">
+<!-- MODALS -->
+<div class="overlay" id="m-confirm">
   <div class="modal">
-    <div class="modal-title" style="color:var(--red);">放棄獎品</div>
-    <div class="warn-box" style="margin-bottom:18px;"><div class="warn-icon">!</div><div>此操作無法復原，已花費的代幣不予退還。</div></div>
-    <p>確定要放棄已選取的獎品嗎？</p>
+    <div class="modal-title">確認出貨</div>
+    <p>即將寄出 <strong>2 件</strong> 獎品</p>
+    <p>扣除運費 <span class="hl">50 代幣</span></p>
     <div class="modal-btns">
-      <button class="btn btn-ghost" onclick="hideOv('modal-abandon')">取消</button>
-      <button class="btn btn-red" onclick="hideOv('modal-abandon')">確定放棄</button>
+      <button class="btn btn-outline" onclick="hideOv('m-confirm')">取消</button>
+      <button class="btn btn-primary" onclick="hideOv('m-confirm');go('pending')">確認送出</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="m-abandon">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--danger);">放棄獎品</div>
+    <div class="warn-box" style="margin-bottom:16px;"><div class="warn-icon">!</div><div>此操作無法復原，代幣不退還。</div></div>
+    <p>確定放棄已選取的獎品嗎？</p>
+    <div class="modal-btns">
+      <button class="btn btn-outline" onclick="hideOv('m-abandon')">取消</button>
+      <button class="btn btn-danger" onclick="hideOv('m-abandon')">確定放棄</button>
     </div>
   </div>
 </div>
 
 <script>
-const bcNames = {
-  cart:'獎品暫存區', detail:'購物明細', ship:'申請出貨',
-  pending:'待出貨訂單', shipped:'已出貨訂單', abandon:'放棄紀錄'
-};
-
-function go(id) {
-  document.querySelectorAll('.side-item').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+const names={cart:'獎品暫存區',detail:'購物明細',ship:'申請出貨',pending:'待出貨訂單',shipped:'已出貨訂單',abandon:'放棄紀錄'};
+function go(id){
+  document.querySelectorAll('.side-item').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelector(`[data-p="${id}"]`).classList.add('active');
   document.getElementById(`p-${id}`).classList.add('active');
-  document.getElementById('bc-text').textContent = bcNames[id];
+  document.getElementById('bc').textContent=names[id];
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
-document.querySelectorAll('.side-item').forEach(s => {
-  s.addEventListener('click', () => go(s.dataset.p));
-});
-
-function togRow(el) { el.classList.toggle('on'); }
-
-function toggleAll() {
-  const rows = document.querySelectorAll('.prize-row');
-  const allOn = [...rows].every(r => r.classList.contains('on'));
-  rows.forEach(r => allOn ? r.classList.remove('on') : r.classList.add('on'));
+document.querySelectorAll('.side-item').forEach(s=>{s.addEventListener('click',()=>go(s.dataset.p));});
+function togR(el){el.classList.toggle('on');}
+function toggleAll(){
+  const r=document.querySelectorAll('.t-row');
+  const a=[...r].every(x=>x.classList.contains('on'));
+  r.forEach(x=>a?x.classList.remove('on'):x.classList.add('on'));
 }
-
-let curStep = 1;
-function toStep(n) {
-  curStep = n;
-  for (let i = 1; i <= 4; i++) {
-    const d = document.getElementById(`sd${i}`);
-    const l = document.getElementById(`sl${i}t`);
-    d.classList.remove('now','ok');
-    l.classList.remove('now','ok');
-    if (i < n) { d.classList.add('ok'); l.classList.add('ok'); }
-    if (i === n) { d.classList.add('now'); l.classList.add('now'); }
-  }
-  for (let i = 1; i <= 3; i++) {
-    const line = document.getElementById(`sl${i}`);
-    if (line) line.classList.toggle('ok', i < n);
-  }
-  document.querySelectorAll('.step-block').forEach(s => s.classList.remove('active'));
-  document.getElementById(`sb${n}`).classList.add('active');
-  window.scrollTo({top:140,behavior:'smooth'});
-}
-
-function applyCp() {
+function applyCp(){
   document.getElementById('cp-ok').classList.add('show');
-  document.getElementById('disc-row').style.display = 'flex';
-  document.getElementById('total-val').textContent = '50 代幣';
+  document.getElementById('disc').style.display='flex';
+  document.getElementById('tv').textContent='50 代幣';
 }
-
-function showOv(id) { document.getElementById(id).classList.add('show'); }
-function hideOv(id) { document.getElementById(id).classList.remove('show'); }
-
-document.querySelectorAll('.overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('show'); });
-});
+function showOv(id){document.getElementById(id).classList.add('show');}
+function hideOv(id){document.getElementById(id).classList.remove('show');}
+document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');});});
 </script>
-
 </body>
 </html>
