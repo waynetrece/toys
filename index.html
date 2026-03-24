@@ -160,6 +160,23 @@ body {
   background: var(--bg); border: 1px solid var(--border);
   border-radius: var(--r-sm); padding: 7px 14px;
   cursor: pointer; font-family: var(--font);
+  transition: all 140ms var(--ease);
+}
+.tb-sort.active { background: var(--brand-light); color: var(--brand); border-color: rgba(0,217,255,0.3); font-weight: 600; }
+
+/* GROUP HEADER */
+.group-header {
+  padding: 10px 20px; font-size: 0.78rem; font-weight: 700;
+  color: var(--brand); background: rgba(0,217,255,0.04);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.02em;
+  display: flex; align-items: center; gap: 8px;
+}
+.group-header .gh-count {
+  font-size: 0.65rem; font-weight: 600;
+  padding: 1px 8px; border-radius: 10px;
+  background: var(--brand-light); color: var(--brand);
+  border: 1px solid rgba(0,217,255,0.2);
 }
 
 /* ===== TABLE ===== */
@@ -592,7 +609,10 @@ body {
       </div>
       <div class="toolbar">
         <div class="toolbar-left"><button class="tb-btn" onclick="toggleAll()">全選 / 取消全選</button></div>
-        <button class="tb-sort">依抽取時間排序 &#x25BE;</button>
+        <div class="toolbar-left">
+          <button class="tb-sort active" onclick="sortBy('time',this)">依抽取時間</button>
+          <button class="tb-sort" onclick="sortBy('series',this)">依系列分組</button>
+        </div>
       </div>
       <div class="table">
         <div class="t-head"><div></div><div>圖片</div><div>獎品名稱</div><div>來源一番賞</div><div>花費</div><div>抽取時間</div></div>
@@ -778,6 +798,39 @@ function toggleAll(){
   const r=document.querySelectorAll('#p-cart .t-row');
   const a=[...r].every(x=>x.classList.contains('on'));
   r.forEach(x=>a?x.classList.remove('on'):x.classList.add('on'));
+}
+
+// Store original order on load
+const cartScroll=document.querySelector('#p-cart .table-scroll');
+const originalRows=[...cartScroll.querySelectorAll('.t-row')];
+
+function sortBy(mode,btn){
+  document.querySelectorAll('.tb-sort').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Remove group headers
+  cartScroll.querySelectorAll('.group-header').forEach(g=>g.remove());
+  const rows=[...cartScroll.querySelectorAll('.t-row')];
+  if(mode==='time'){
+    // Restore original order
+    originalRows.forEach(r=>cartScroll.appendChild(r));
+  } else {
+    // Group by series
+    const groups={};
+    rows.forEach(r=>{
+      const src=r.querySelector('.t-source').textContent;
+      if(!groups[src])groups[src]=[];
+      groups[src].push(r);
+    });
+    // Sort groups by count (most items first)
+    const sorted=Object.entries(groups).sort((a,b)=>b[1].length-a[1].length);
+    sorted.forEach(([name,items])=>{
+      const hdr=document.createElement('div');
+      hdr.className='group-header';
+      hdr.innerHTML=name+'<span class="gh-count">'+items.length+' 件</span>';
+      cartScroll.appendChild(hdr);
+      items.forEach(r=>cartScroll.appendChild(r));
+    });
+  }
 }
 function applyCp(){
   document.getElementById('cp-ok').classList.add('show');
