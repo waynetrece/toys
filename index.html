@@ -578,8 +578,8 @@ body {
 }
 .ord-row:last-child { border-bottom: none; }
 .ord-row:hover { background: rgba(255,255,255,0.02); }
-.ord-row .chevron { font-size: 0.7rem; color: var(--text3); transition: transform 200ms var(--ease); text-align: center; }
-.ord-row.expanded .chevron { transform: rotate(180deg); color: var(--brand); }
+.ord-row .chevron { font-size: 1.1rem; color: var(--brand); transition: transform 200ms var(--ease); text-align: center; }
+.ord-row.expanded .chevron { transform: rotate(180deg); color: var(--brand); text-shadow: 0 0 10px rgba(0,217,255,0.4); }
 
 /* ORDER EXPAND DETAIL */
 .ord-expand {
@@ -797,7 +797,8 @@ body {
           </div>
         </div>
         <div class="ship-panel">
-          <h3>收件資訊 <span class="opt-tag">非必要</span></h3>
+          <h3>收件資訊</h3>
+          <div style="font-size:0.75rem;color:var(--text3);margin-bottom:8px;">已儲存的地址 <span class="opt-tag">非必要</span></div>
           <div class="addr-selector">
             <div class="addr-opt on" onclick="selectAddr(this,'王小明','0912-345-678','106 台北市大安區忠孝東路三段 123 號 5 樓')">
               <div class="addr-radio"></div>
@@ -865,10 +866,10 @@ body {
         <div class="empty-desc">申請出貨後，訂單會顯示在這裡</div>
       </div>
       <div class="abn-table" id="orders-table">
-        <div class="abn-head" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
+        <div class="abn-head" style="grid-template-columns:90px 160px 80px 120px 160px 120px 40px;">
           <div>狀態</div><div>訂單編號</div><div>數量</div><div>申請日期</div><div>物流單號</div><div>預計/送達</div><div></div>
         </div>
-        <div class="ord-row" data-type="pending" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
+        <div class="ord-row" data-type="pending" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 120px 40px;">
           <div><span class="tag t-pack">包裝中</span></div>
           <div class="order-id">#ORD-20260322-0847</div>
           <div class="t-name">3 件</div>
@@ -884,7 +885,7 @@ body {
             <div class="ord-prize"><div class="op-thumb i6"><svg><use href="#ic-gem"/></svg></div><span style="color:#B45309;font-weight:700;">C賞</span> 皮卡丘 毛絨公仔</div>
           </div>
         </div>
-        <div class="ord-row" data-type="pending" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
+        <div class="ord-row" data-type="pending" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 120px 40px;">
           <div><span class="tag t-process">處理中</span></div>
           <div class="order-id">#ORD-20260320-0632</div>
           <div class="t-name">2 件</div>
@@ -899,7 +900,7 @@ body {
             <div class="ord-prize"><div class="op-thumb i5"><svg><use href="#ic-star"/></svg></div><span style="color:#3B82F6;font-weight:700;">D賞</span> 喬巴 馬克杯</div>
           </div>
         </div>
-        <div class="ord-row" data-type="shipped" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
+        <div class="ord-row" data-type="shipped" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 120px 40px;">
           <div><span class="tag t-ship">運送中</span></div>
           <div class="order-id">#ORD-20260310-0198</div>
           <div class="t-name">1 件</div>
@@ -913,7 +914,7 @@ body {
             <div class="ord-prize"><div class="op-thumb i4"><svg><use href="#ic-anchor"/></svg></div><span style="color:#D97706;font-weight:700;">A賞</span> 魯夫 五檔 Figure</div>
           </div>
         </div>
-        <div class="ord-row" data-type="shipped" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 130px 30px;">
+        <div class="ord-row" data-type="shipped" onclick="toggleOrd(this)" style="grid-template-columns:90px 160px 80px 120px 160px 120px 40px;">
           <div><span class="tag t-done">已送達</span></div>
           <div class="order-id">#ORD-20260315-0421</div>
           <div class="t-name">4 件</div>
